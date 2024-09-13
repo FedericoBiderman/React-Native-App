@@ -1,11 +1,35 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const navigation = useNavigation();
+  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(`${baseUrl}/api/user/login`, {
+        username,
+        password,
+      });
+
+      if (response.data.success) {
+        Alert.alert('Login Exitoso', 'Has ingresado correctamente.', [
+          { text: 'OK', onPress: () => navigation.replace('HomeScreen') },
+        ]);
+      } else {
+        Alert.alert('Error', 'Usuario o contraseña incorrectos.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Hubo un problema al intentar iniciar sesión.');
+    }
+  };
   
   const togglePasswordVisibility = () => {
     setSecureTextEntry(!secureTextEntry);
@@ -46,17 +70,17 @@ export default function LoginScreen() {
         </View>
       </View>
   
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('OlvideContrasenaScreen')}>
         <Text style={styles.forgotPasswordText}>Forgot my password?</Text>
       </TouchableOpacity>
   
       <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Log in</Text>
+        <Text style={styles.loginButtonText} onPress={handleLogin}>Log in</Text>
       </TouchableOpacity>
   
       <View style={styles.footerContainer}>
         <Text style={styles.footerText}>You are new? </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
           <Text style={styles.createAccountText}>Create an account</Text>
         </TouchableOpacity>
       </View>
