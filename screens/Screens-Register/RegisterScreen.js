@@ -1,50 +1,46 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = () => {
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigation = useNavigation();
 
-  const handleRegister = () => {
-    console.log('Registrando usuario:', { nombre, apellido, username, password });
+  const handleContinue = () => {
+    navigation.navigate('BirthdayPhoneScreen', { firstName, lastName, username });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Registrarse</Text>
-
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: '0%' }]} />
+      </View>
       <TextInput
-        placeholder="Nombre"
         style={styles.input}
-        value={nombre} 
-        onChangeText={setNombre}
+        placeholder="What's your first name?"
+        value={firstName}
+        onChangeText={setFirstName}
       />
-
       <TextInput
-        placeholder="Apellido"
         style={styles.input}
-        value={apellido}
-        onChangeText={setApellido}
+        placeholder="What's your last name?"
+        value={lastName}
+        onChangeText={setLastName}
       />
-
       <TextInput
-        placeholder="Username"
         style={styles.input}
+        placeholder="Create a username"
         value={username}
         onChangeText={setUsername}
       />
-
-      <TextInput
-        placeholder="Password"
-        style={styles.input}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <Button title="Registrarse" onPress={handleRegister} />
+      <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+        <Text style={styles.buttonText}>Continue</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+        <Text style={styles.loginText}>Do you already have an account? Log in</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -52,23 +48,47 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+    marginTop: 80,
+    backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 40,
+  progressBar: {
+    height: 25,
+    backgroundColor: '#e0e0e0',
+    marginLeft: 120,
+    width: 160,
+    marginBottom: 20,
+    borderRadius: 30,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 30,
+    width: 160,
+    backgroundColor: '#4CAF50',
   },
   input: {
-    width: '100%',
     height: 50,
-    borderColor: 'gray',
+    borderColor: '#e0e0e0',
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 5,
+    marginBottom: 15,
     paddingHorizontal: 10,
-    marginBottom: 20,
+  },
+  continueButton: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loginText: {
+    marginTop: 20,
+    textAlign: 'center',
+    color: '#007AFF',
   },
 });
 
