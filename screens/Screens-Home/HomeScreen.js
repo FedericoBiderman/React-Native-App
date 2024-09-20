@@ -24,7 +24,7 @@ const HomeScreen = () => {
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.navigate("UserDataScreen")}>
+                    <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")}>
                         <View style={styles.userInfo}>
                             <Text style={styles.headerText}>Hola, Federico</Text>
                             <Ionicons name="chevron-forward" size={24} color="black" />

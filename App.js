@@ -14,6 +14,7 @@ import OlvideContrasenaScreen from "./screens/Screens-OlvideContrasena/OlvideCon
 import OlvideContrasenaScreen2 from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen2";
 import NewPasswordScreen from "./screens/Screens-NewPassword/NewPasswordScreen";
 import VolverInicioSesionScreen from "./screens/Screens-NewPassword/VolverInicioSesionScreen";
+import ProfileScreen from "./screens/Screens-Profile/ProfileScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createStackNavigator();
@@ -85,6 +86,11 @@ export default function App() {
         <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
