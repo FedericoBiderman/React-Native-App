@@ -14,10 +14,58 @@ import OlvideContrasenaScreen from "./screens/Screens-OlvideContrasena/OlvideCon
 import OlvideContrasenaScreen2 from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen2";
 import NewPasswordScreen from "./screens/Screens-NewPassword/NewPasswordScreen";
 import VolverInicioSesionScreen from "./screens/Screens-NewPassword/VolverInicioSesionScreen";
+import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProfPicker/CreateProfessionalAccountScreen";
+import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProfPursuer/CreateProfessionalAccountScreen";
+import DataEntryScreen from "./screens/Screens-CuentaProfPicker/DataEntryScreen";
+import DataEntryScreen from "./screens/Screens-CuentaProfPursuer/DataEntryScreen";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
+function MyTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="chatbubble-ellipses-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="MatchScreen"
+        component={MatchScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="search-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person-outline" size={24} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 export default function App() {
   return (
     <NavigationContainer>
@@ -85,6 +133,21 @@ export default function App() {
         <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+            <Stack.Screen
+          name="CreateProfessionalAccountScreen"
+          component={CreateProfessionalAccountScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DataEntryScreen"
+          component={DataEntryScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MainTabs"
+          component={MyTabs}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
