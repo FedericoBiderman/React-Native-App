@@ -94,7 +94,7 @@ export default function App() {
           component={OlvideContrasenaScreen2}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="NewPasswordScreen"
           component={NewPasswordScreen}
           options={{ headerShown: false }}
@@ -134,7 +134,16 @@ export default function App() {
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-            <Stack.Screen
+        <Stack.Screen
+          name="MainTabs"
+          component={MyTabs}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+        />
+        <Stack.Screen
           name="CreateProfessionalAccountScreen"
           component={CreateProfessionalAccountScreen}
           options={{ headerShown: false }}
