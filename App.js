@@ -14,14 +14,10 @@ import OlvideContrasenaScreen from "./screens/Screens-OlvideContrasena/OlvideCon
 import OlvideContrasenaScreen2 from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen2";
 import NewPasswordScreen from "./screens/Screens-NewPassword/NewPasswordScreen";
 import VolverInicioSesionScreen from "./screens/Screens-NewPassword/VolverInicioSesionScreen";
-<<<<<<< HEAD
-import ProfileScreen from "./screens/Screens-Profile/ProfileScreen";
-=======
 import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProfPicker/CreateProfessionalAccountScreen";
 import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProfPursuer/CreateProfessionalAccountScreen";
 import DataEntryScreen from "./screens/Screens-CuentaProfPicker/DataEntryScreen";
 import DataEntryScreen from "./screens/Screens-CuentaProfPursuer/DataEntryScreen";
->>>>>>> fdb7782e44822ab65d23b721000f25aaf287eae5
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -99,7 +95,7 @@ export default function App() {
           component={OlvideContrasenaScreen2}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="NewPasswordScreen"
           component={NewPasswordScreen}
           options={{ headerShown: false }}
@@ -139,12 +135,16 @@ export default function App() {
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-<<<<<<< HEAD
+        <Stack.Screen
+          name="MainTabs"
+          component={MyTabs}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="ProfileScreen"
           component={ProfileScreen}
-=======
-            <Stack.Screen
+        />
+        <Stack.Screen
           name="CreateProfessionalAccountScreen"
           component={CreateProfessionalAccountScreen}
           options={{ headerShown: false }}
@@ -152,12 +152,6 @@ export default function App() {
         <Stack.Screen
           name="DataEntryScreen"
           component={DataEntryScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="MainTabs"
-          component={MyTabs}
->>>>>>> fdb7782e44822ab65d23b721000f25aaf287eae5
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
