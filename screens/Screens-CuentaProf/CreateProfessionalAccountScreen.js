@@ -51,9 +51,11 @@ const styles = StyleSheet.create({
     },
     pursuerButton: {
       backgroundColor: '#007AFF',
+      width: 250,
     },
     pickerButton: {
       backgroundColor: '#FF3B30',
+      width: 250,
     },
     buttonText: {
       color: 'white',

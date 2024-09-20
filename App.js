@@ -14,10 +14,9 @@ import OlvideContrasenaScreen from "./screens/Screens-OlvideContrasena/OlvideCon
 import OlvideContrasenaScreen2 from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen2";
 import NewPasswordScreen from "./screens/Screens-NewPassword/NewPasswordScreen";
 import VolverInicioSesionScreen from "./screens/Screens-NewPassword/VolverInicioSesionScreen";
-import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProfPicker/CreateProfessionalAccountScreen";
-import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProfPursuer/CreateProfessionalAccountScreen";
-import DataEntryScreen from "./screens/Screens-CuentaProfPicker/DataEntryScreen";
-import DataEntryScreen from "./screens/Screens-CuentaProfPursuer/DataEntryScreen";
+import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProf/CreateProfessionalAccountScreen";
+import DataEntryScreen from "./screens/Screens-CuentaProf/DataEntryScreen";
+import CompanyNameEntryScreen from "./screens/Screens-CuentaProfPicker/CompanyNameEntryScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -143,6 +142,11 @@ export default function App() {
         <Stack.Screen
           name="DataEntryScreen"
           component={DataEntryScreen}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="CompanyNameEntryScreen"
+          component={CompanyNameEntryScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
