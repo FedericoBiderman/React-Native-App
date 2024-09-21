@@ -10,6 +10,7 @@ import EmailPasswordScreen from "./screens/Screens-Register/EmailPasswordScreen"
 import DNIScreen from "./screens/Screens-Register/DNIScreen";
 import SignUpFinalizedScreen from "./screens/Screens-Register/SignUpFinalizedScreen";
 import HomeScreen from "./screens/Screens-Home/HomeScreen";
+import ProfileScreen from "./screens/Screens-Profile/ProfileScreen";
 import OlvideContrasenaScreen from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen";
 import OlvideContrasenaScreen2 from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen2";
 import NewPasswordScreen from "./screens/Screens-NewPassword/NewPasswordScreen";
@@ -17,6 +18,7 @@ import VolverInicioSesionScreen from "./screens/Screens-NewPassword/VolverInicio
 import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProf/CreateProfessionalAccountScreen";
 import DataEntryScreen from "./screens/Screens-CuentaProf/DataEntryScreen";
 import CompanyNameEntryScreen from "./screens/Screens-CuentaProfPicker/CompanyNameEntryScreen";
+import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -135,11 +137,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="MainTabs"
-          component={MyTabs}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="ProfileScreen"
           component={ProfileScreen}
         />
@@ -156,6 +153,11 @@ export default function App() {
          <Stack.Screen
           name="CompanyNameEntryScreen"
           component={CompanyNameEntryScreen}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="CategoryDetailScreen"
+          component={CategoryDetailScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
