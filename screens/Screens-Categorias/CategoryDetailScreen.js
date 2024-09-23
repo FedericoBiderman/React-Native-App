@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
   },
   lawyerCard: {
     flexDirection: 'row',
-    marginBottom: 20,
   },
   avatar: {
     width: 50,
