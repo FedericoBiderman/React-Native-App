@@ -6,7 +6,7 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={{ uri:  require('../../assets/profile1.png') }} // Add profile image URL
+          source={require('../../assets/profile1.png')} // Add profile image URL
           style={styles.profileImage}
         />
         <Text style={styles.percentage}>26% COMPLETE</Text>

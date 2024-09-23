@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-
+import { useNavigation } from '@react-navigation/native';
 const CompanyNameEntryScreen = ({ navigation }) => {
   const [companyName, setCompanyName] = useState('');
+  
 
   const handleContinue = () => {
-    navigation.navigate('NextScreen', { companyName });
+    navigation.navigate('TipoEmpresaScreen', { companyName });
   };
 
   const handleSkip = () => {
-    navigation.navigate('NextScreen');
+    navigation.navigate('TipoEmpresaScreen');
   };
 
   const handleGoHome = () => {
@@ -32,7 +33,9 @@ const CompanyNameEntryScreen = ({ navigation }) => {
             <Text style={styles.skipButton}>Skip</Text>
           </TouchableOpacity>
         </View>
-        
+        <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: '0%' }]} />
+      </View>
         <View style={styles.content}>
           <Text style={styles.title}>Tu Empresa, Tu Orgullo</Text>
           <TextInput
@@ -130,12 +133,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   goHomeButton: {
-    padding: 15,
+    backgroundColor: '#FF3B30',
+    padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    backgroundColor: '#FF3B30',
-    width: 250,
-    alignItems: 'center',
+  },
+  progressBar: {
+    height: 25,
+    backgroundColor: '#e0e0e0',
+    marginLeft: 120,
+    width: 160,
+    marginBottom: 20,
+    borderRadius: 30,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 30,
+    width: 160,
+    backgroundColor: '#4CAF50',
   },
 });
 

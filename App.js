@@ -18,7 +18,13 @@ import VolverInicioSesionScreen from "./screens/Screens-NewPassword/VolverInicio
 import CreateProfessionalAccountScreen from "./screens/Screens-CuentaProf/CreateProfessionalAccountScreen";
 import DataEntryScreen from "./screens/Screens-CuentaProf/DataEntryScreen";
 import CompanyNameEntryScreen from "./screens/Screens-CuentaProfPicker/CompanyNameEntryScreen";
+import TipoEmpresaScreen from "./screens/Screens-CuentaProfPicker/TipoEmpresaScreen";
+import EspecializacionEmpresaScreen from "./screens/Screens-CuentaProfPicker/EspecializacionEmpresaScreen";
+import UbicacionGlobEmpresaScreen from "./screens/Screens-CuentaProfPicker/UbicacionGlobEmpresaScreen";
+import ImpactoLocalEmpresaScreen from "./screens/Screens-CuentaProfPicker/ImpactoLocalEmpresaScreen";
+import PublicoObjetivoEmpresaScreen from "./screens/Screens-CuentaProfPicker/PublicoObjetivoEmpresaScreen";
 import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
+import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -155,9 +161,39 @@ export default function App() {
           component={CompanyNameEntryScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="TipoEmpresaScreen"
+          component={TipoEmpresaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EspecializacionEmpresaScreen"
+          component={EspecializacionEmpresaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="UbicacionGlobEmpresaScreen"
+          component={UbicacionGlobEmpresaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ImpactoLocalEmpresaScreen"
+          component={ImpactoLocalEmpresaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PublicoObjetivoEmpresaScreen"
+          component={PublicoObjetivoEmpresaScreen}
+          options={{ headerShown: false }}
+        />
           <Stack.Screen
           name="CategoryDetailScreen"
           component={CategoryDetailScreen}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
+          name="AllCategoriesScreen"
+          component={AllCategoriesScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
