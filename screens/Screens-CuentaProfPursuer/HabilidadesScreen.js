@@ -4,29 +4,29 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const ageRanges = [
-  '15-18',
-  '19-22',
-  '23-26',
-  '27-30',
-  '+30',
-  '40-60',
-  'any age'
+const SkillsTypes = [
+  'Javascript',
+  'React',
+  'React Native',
+  'Node JS',
+  'CSS',
+  'Python',
+  'Java '
 ];
 
-const PublicoObjetivoEmpresaScreen = () => {
+const HabilidadesScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRange, setSelectedRange] = useState('');
+  const [selectedSkills, setSelectedSkills] = useState('');
 
-  const handleSelectRange = (range) => {
-    setSelectedRange(range);
+  const handleSelectSkills = (Skills) => {
+    setSelectedSkills(Skills);
     setModalVisible(false);
   };
 
   const handleContinue = () => {
     // Navigate to the next screen with the selected age range
-    navigation.navigate('CuentaProfTerminadoScreen', { ageRange: selectedRange });
+    navigation.navigate('CuentaProfTerminadoScreen', { SkillsTypes: selectedSkills });
   };
 
   return (
@@ -45,26 +45,26 @@ const PublicoObjetivoEmpresaScreen = () => {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Público Objetivo.</Text>
+        <Text style={styles.title}>Tus Habilidades.</Text>
         
         <TouchableOpacity 
           style={styles.pickerContainer}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={selectedRange ? styles.selectedText : styles.placeholderText}>
-            {selectedRange || '¿Qué rango etario está buscando tu empresa?'}
+          <Text style={selectedSkills ? styles.selectedText : styles.placeholderText}>
+            {selectedSkills || 'Describe tus habilidades clave.'}
           </Text>
           <Ionicons name="chevron-down" size={24} color="#888" />
         </TouchableOpacity>
 
         <Text style={styles.description}>
-          Así entenderán a quiénes buscas atraer.
+        Así es como los empleadores verán lo que puedes aportar.
         </Text>
 
         <TouchableOpacity 
-          style={[styles.continueButton, !selectedRange && styles.continueButtonDisabled]}
+          style={[styles.continueButton, !selectedSkills && styles.continueButtonDisabled]}
           onPress={handleContinue}
-          disabled={!selectedRange}
+          disabled={!selectedSkills}
         >
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
@@ -83,19 +83,19 @@ const PublicoObjetivoEmpresaScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Selecciona el rango etario</Text>
+              <Text style={styles.modalTitle}>Describe tus habilidades clave.</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={24} color="black" />
               </TouchableOpacity>
             </View>
 
             <FlatList
-              data={ageRanges}
+              data={SkillsTypes}
               keyExtractor={(item) => item}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.optionItem}
-                  onPress={() => handleSelectRange(item)}
+                  onPress={() => handleSelectSkills(item)}
                 >
                   <Text>{item}</Text>
                 </TouchableOpacity>
@@ -219,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PublicoObjetivoEmpresaScreen;
+export default HabilidadesScreen;

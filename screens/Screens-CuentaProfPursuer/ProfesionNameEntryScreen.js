@@ -5,16 +5,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-const CompanyNameEntryScreen = () => {
+const ProfesionNameEntryScreen = () => {
   const [companyName, setCompanyName] = useState('');
   const navigation = useNavigation();
 
   const handleContinue = () => {
-    navigation.navigate('TipoEmpresaScreen', { companyName });
+    navigation.navigate('EspecializacionProfesionScreen', { companyName });
   };
 
   const handleSkip = () => {
-    navigation.navigate('TipoEmpresaScreen');
+    navigation.navigate('EspecializacionProfesionScreen');
   };
 
   const handleGoHome = () => {
@@ -40,16 +40,16 @@ const CompanyNameEntryScreen = () => {
           <View style={[styles.progressFill, { width: '0%' }]} />
         </View>
         <View style={styles.content}>
-          <Text style={styles.title}>Tu Empresa, Tu Orgullo</Text>
+          <Text style={styles.title}>Tu Profesion, Tu Orgullo</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Escribe el nombre de tu empresa"
+              placeholder="Escribe el rubro en el que trabajas"
               value={companyName}
               onChangeText={setCompanyName}
             />
           </View>
-          <Text style={styles.description}>Así es como tu empresa será reconocida</Text>
+          <Text style={styles.description}>Así es como destacaras en tu industria</Text>
         </View>
 
         <View style={styles.buttonContainer}>
@@ -155,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompanyNameEntryScreen;
+export default ProfesionNameEntryScreen;

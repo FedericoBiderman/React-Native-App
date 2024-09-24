@@ -1,32 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const ageRanges = [
-  '15-18',
-  '19-22',
-  '23-26',
-  '27-30',
-  '+30',
-  '40-60',
-  'any age'
+const profesionTypes = [
+  'Desarrollador Web',
+  'Desarrollador de Aplicaciones',
+  'Programador de Escritorio',
+  'Programador cientifico de datos',
+  'Programador FrontEnd', 
+  'Programador BackEnd',
+  'Programador Full-Stack',
 ];
 
-const PublicoObjetivoEmpresaScreen = () => {
+const EspecializacionEmpresaScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRange, setSelectedRange] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSelectRange = (range) => {
-    setSelectedRange(range);
+  const filteredTypes = profesionTypes.filter(type => 
+    type.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSelectType = (type) => { 
+    setSelectedType(type);
     setModalVisible(false);
   };
 
   const handleContinue = () => {
-    // Navigate to the next screen with the selected age range
-    navigation.navigate('CuentaProfTerminadoScreen', { ageRange: selectedRange });
+    navigation.navigate('FormacionAcademicaScreen', { profesionType: selectedType });
+  };
+
+  const handleGoHome = () => {
+    navigation.navigate('HomeScreen');
   };
 
   return (
@@ -35,41 +43,39 @@ const PublicoObjetivoEmpresaScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('CuentaProfTerminadoScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('FormacionAcademicaScreen')}>
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: '83.33%' }]} />
+        <View style={[styles.progressFill, { width: '16.67%' }]} />
       </View>
-
+ 
       <View style={styles.content}>
-        <Text style={styles.title}>Público Objetivo.</Text>
+        <Text style={styles.title}>Especializacion de tu profesion</Text>
         
         <TouchableOpacity 
-          style={styles.pickerContainer}
+          style={styles.inputContainer}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={selectedRange ? styles.selectedText : styles.placeholderText}>
-            {selectedRange || '¿Qué rango etario está buscando tu empresa?'}
+          <Text style={selectedType ? styles.selectedText : styles.placeholderText}>
+            {selectedType || 'Describe en que te especializas'}
           </Text>
-          <Ionicons name="chevron-down" size={24} color="#888" />
         </TouchableOpacity>
 
         <Text style={styles.description}>
-          Así entenderán a quiénes buscas atraer.
+        Destaca lo que te hace único en el mercado laboral.
         </Text>
 
         <TouchableOpacity 
-          style={[styles.continueButton, !selectedRange && styles.continueButtonDisabled]}
+          style={[styles.continueButton, !selectedType && styles.continueButtonDisabled]}
           onPress={handleContinue}
-          disabled={!selectedRange}
+          disabled={!selectedType}
         >
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.goHomeButton} onPress={() => navigation.navigate('HomeScreen')}>
+        <TouchableOpacity style={styles.goHomeButton} onPress={handleGoHome}>
           <Text style={styles.goHomeButtonText}>Go home, continue later</Text>
         </TouchableOpacity>
       </View>
@@ -83,19 +89,26 @@ const PublicoObjetivoEmpresaScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Selecciona el rango etario</Text>
+              <Text style={styles.modalTitle}>Destaca lo que te hace único en el mercado laboral.</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={24} color="black" />
               </TouchableOpacity>
             </View>
 
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+
             <FlatList
-              data={ageRanges}
+              data={filteredTypes}
               keyExtractor={(item) => item}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.optionItem}
-                  onPress={() => handleSelectRange(item)}
+                  onPress={() => handleSelectType(item)}
                 >
                   <Text>{item}</Text>
                 </TouchableOpacity>
@@ -132,10 +145,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
-  pickerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  inputContainer: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
@@ -163,9 +173,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  continueButtonDisabled: {
-    backgroundColor: '#A0A0A0',
-  },
   goHomeButton: {
     backgroundColor: '#FF3B30',
     padding: 16,
@@ -175,20 +182,6 @@ const styles = StyleSheet.create({
   goHomeButtonText: {
     color: 'white',
     fontWeight: 'bold',
-  },
-  progressBar: {
-    height: 25,
-    backgroundColor: '#e0e0e0',
-    marginLeft: 120,
-    width: 160,
-    marginBottom: 20,
-    borderRadius: 30,
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 30,
-    width: 160,
-    backgroundColor: '#4CAF50',
   },
   modalContainer: {
     flex: 1,
@@ -212,11 +205,35 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+  },
   optionItem: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
+  continueButtonDisabled: {
+    backgroundColor: '#A0A0A0',
+  },
+  progressBar: {
+    height: 25,
+    backgroundColor: '#e0e0e0',
+    marginLeft: 120,
+    width: 160,
+    marginBottom: 20,
+    borderRadius: 30,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 30,
+    width: 160,
+    backgroundColor: '#4CAF50',
+  },
 });
 
-export default PublicoObjetivoEmpresaScreen;
+export default EspecializacionEmpresaScreen;

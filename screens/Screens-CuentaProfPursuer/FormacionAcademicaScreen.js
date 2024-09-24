@@ -4,67 +4,63 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const ageRanges = [
-  '15-18',
-  '19-22',
-  '23-26',
-  '27-30',
-  '+30',
-  '40-60',
-  'any age'
+const formacionOptions = [
+  'Si',
+  'No',
+  'Estoy estudiando',
+  'No fui a la universidad',
 ];
 
-const PublicoObjetivoEmpresaScreen = () => {
+const FormacionAcademicaScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRange, setSelectedRange] = useState('');
+  const [selectedFormacion, setSelectedFormacion] = useState('');
 
-  const handleSelectRange = (range) => {
-    setSelectedRange(range);
+  const handleSelectFormacion = (formacion) => {
+    setSelectedFormacion(formacion);
     setModalVisible(false);
   };
 
   const handleContinue = () => {
-    // Navigate to the next screen with the selected age range
-    navigation.navigate('CuentaProfTerminadoScreen', { ageRange: selectedRange });
+    navigation.navigate('TrayectoriaAcademicaScreen', { formacionAcademica: selectedFormacion });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="black" />
+          <Ionicons name="chevron-back" size={24} color="#007AFF" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('CuentaProfTerminadoScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('TrayectoriaAcademicaScreen')}>
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: '83.33%' }]} />
+        <View style={[styles.progressFill, { width: '33.33%' }]} />
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Público Objetivo.</Text>
+        <Text style={styles.title}>¿Cuál es tu Formación Académica?</Text>
         
         <TouchableOpacity 
           style={styles.pickerContainer}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={selectedRange ? styles.selectedText : styles.placeholderText}>
-            {selectedRange || '¿Qué rango etario está buscando tu empresa?'}
+          <Text style={selectedFormacion ? styles.selectedText : styles.placeholderText}>
+            {selectedFormacion || '¿Tienes un título de grado o posgrado?'}
           </Text>
           <Ionicons name="chevron-down" size={24} color="#888" />
         </TouchableOpacity>
 
         <Text style={styles.description}>
-          Así entenderán a quiénes buscas atraer.
+          Así demostrarás tu nivel educativo.
         </Text>
 
         <TouchableOpacity 
-          style={[styles.continueButton, !selectedRange && styles.continueButtonDisabled]}
+          style={[styles.continueButton, !selectedFormacion && styles.continueButtonDisabled]}
           onPress={handleContinue}
-          disabled={!selectedRange}
+          disabled={!selectedFormacion}
         >
           <Text style={styles.continueButtonText}>Continue</Text>
         </TouchableOpacity>
@@ -83,19 +79,19 @@ const PublicoObjetivoEmpresaScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Selecciona el rango etario</Text>
+              <Text style={styles.modalTitle}>¿Tienes un título de grado o posgrado?</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={24} color="black" />
               </TouchableOpacity>
             </View>
 
             <FlatList
-              data={ageRanges}
+              data={formacionOptions}
               keyExtractor={(item) => item}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.optionItem}
-                  onPress={() => handleSelectRange(item)}
+                  onPress={() => handleSelectFormacion(item)}
                 >
                   <Text>{item}</Text>
                 </TouchableOpacity>
@@ -121,7 +117,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: 'black',
+    color: '#007AFF',
   },
   content: {
     flex: 1,
@@ -219,4 +215,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PublicoObjetivoEmpresaScreen;
+export default FormacionAcademicaScreen;

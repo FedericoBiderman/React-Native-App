@@ -23,6 +23,14 @@ import EspecializacionEmpresaScreen from "./screens/Screens-CuentaProfPicker/Esp
 import UbicacionGlobEmpresaScreen from "./screens/Screens-CuentaProfPicker/UbicacionGlobEmpresaScreen";
 import ImpactoLocalEmpresaScreen from "./screens/Screens-CuentaProfPicker/ImpactoLocalEmpresaScreen";
 import PublicoObjetivoEmpresaScreen from "./screens/Screens-CuentaProfPicker/PublicoObjetivoEmpresaScreen";
+import ProfesionNameEntryScreen from "./screens/Screens-CuentaProfPursuer/ProfesionNameEntryScreen";
+import EspecializacionProfesionScreen from "./screens/Screens-CuentaProfPursuer/EspecializacionProfesionScreen";
+import FormacionAcademicaScreen from "./screens/Screens-CuentaProfPursuer/FormacionAcademicaScreen";
+import TrayectoriaAcademicaScreen from "./screens/Screens-CuentaProfPursuer/TrayectoriaAcademicaScreen";
+import UbicacionGlobalScreen from "./screens/Screens-CuentaProfPursuer/UbicacionGlobalScreen";
+import UbicacionLocalScreen from "./screens/Screens-CuentaProfPursuer/UbicacionLocalScreen";
+import HabilidadesScreen from "./screens/Screens-CuentaProfPursuer/HabilidadesScreen";
+import CuentaProfTerminadoScreen from "./screens/Screens-CuentaProf/CuentaProfTerminadoScreen";
 import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
 import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScreen";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -184,6 +192,46 @@ export default function App() {
         <Stack.Screen
           name="PublicoObjetivoEmpresaScreen"
           component={PublicoObjetivoEmpresaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfesionNameEntryScreen"
+          component={ProfesionNameEntryScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EspecializacionProfesionScreen"
+          component={EspecializacionProfesionScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FormacionAcademicaScreen"
+          component={FormacionAcademicaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TrayectoriaAcademicaScreen"
+          component={TrayectoriaAcademicaScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="UbicacionGlobalScreen"
+          component={UbicacionGlobalScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="UbicacionLocalScreen"
+          component={UbicacionLocalScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="HabilidadesScreen"
+          component={HabilidadesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CuentaProfTerminadoScreen"
+          component={CuentaProfTerminadoScreen}
           options={{ headerShown: false }}
         />
           <Stack.Screen
