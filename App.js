@@ -31,6 +31,7 @@ import UbicacionGlobalScreen from "./screens/Screens-CuentaProfPursuer/Ubicacion
 import UbicacionLocalScreen from "./screens/Screens-CuentaProfPursuer/UbicacionLocalScreen";
 import HabilidadesScreen from "./screens/Screens-CuentaProfPursuer/HabilidadesScreen";
 import CuentaProfTerminadoScreen from "./screens/Screens-CuentaProf/CuentaProfTerminadoScreen";
+import PreviewProfilePickerScreen from "./screens/Screens-CuentaProfPicker/PreviewProfilePickerScreen";
 import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
 import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScreen";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -232,6 +233,11 @@ export default function App() {
         <Stack.Screen
           name="CuentaProfTerminadoScreen"
           component={CuentaProfTerminadoScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PreviewProfilePickerScreen"
+          component={PreviewProfilePickerScreen}
           options={{ headerShown: false }}
         />
           <Stack.Screen

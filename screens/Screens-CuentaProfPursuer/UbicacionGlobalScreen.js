@@ -29,7 +29,7 @@ const UbicacionGlobalScreen = () => {
   };
 
   const handleContinue = () => {
-    navigation.navigate('ImpactoLocalEmpresaScreen', { country: selectedCountry });
+    navigation.navigate('UbicacionLocalScreen', { country: selectedCountry });
   };
 
   const handleGoHome = () => {
@@ -42,7 +42,7 @@ const UbicacionGlobalScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('ImpactoLocalEmpresaScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('UbicacionLocalScreen')}>
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
       </View>

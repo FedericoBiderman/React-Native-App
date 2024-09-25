@@ -8,7 +8,7 @@ const CuentaProfPickerTerminadoScreen = () => {
 
   const handleVistaPrevia = () => {
     // Navegar a la pantalla de vista previa del perfil
-    navigation.navigate('VistaPreviewPerfilScreen');
+    navigation.navigate('PreviewProfilePickerScreen');
   };
 
   const handleHome = () => {
