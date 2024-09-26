@@ -4,24 +4,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const PreviewProfilePickerScreen = ({ route }) => {
+const PreviewProfilePickerScreen = () => {
   const navigation = useNavigation();
   
-const navigateToProfilePreview = () => {
-    navigation.navigate('ProfilePreviewScreen', {
-      profileCompletion: 26,
-      profileData: {
-        imageUrl: 'https://example.com/profile-image.jpg',
-        name: 'John Doe',
-        age: '30',
-        profession: 'Software Developer',
-        education: 'Bachelor in Computer Science',
-        experience: '5 years',
-        // ... otros datos del perfil
-      }
-    });
+  const profileCompletion = 75; // Ejemplo de porcentaje de compleción
+  
+  const profileData = {
+    imageUrl: require('../../assets/profile2.png'),
+    name: 'John Doe',
+    last_name: 'Smith',
+    age: '30',
+    profession: 'Software Developer',
+    education: 'Bachelor in Computer Science',
+    experience: '5 years',
+    skills: 'JavaScript, React Native, Node.js',
+    empresaType: 'Startup',
+    especializacion: 'Desarrollo de aplicaciones móviles',
   };
-  const { profileCompletion, profileData } = route.params;
 
   const renderProfileItem = (label, value, isCompleted) => (
     <View style={styles.profileItem}>
@@ -41,8 +40,7 @@ const navigateToProfilePreview = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.profileImageContainer}>
-          <Image
-            source={{ uri: profileData.imageUrl }}
+        <Image source={require('./../../assets/profile2.png')}
             style={styles.profileImage}
           />
           <View style={styles.completionOverlay}>
@@ -57,7 +55,6 @@ const navigateToProfilePreview = () => {
         {renderProfileItem('Educación', profileData.education, !!profileData.education)}
         {renderProfileItem('Experiencia', profileData.experience, !!profileData.experience)}
         {renderProfileItem('Habilidades', profileData.skills, !!profileData.skills)}
-        {/* Agrega más ítems según sea necesario */}
 
         {profileCompletion === 100 ? (
           <TouchableOpacity
@@ -70,7 +67,7 @@ const navigateToProfilePreview = () => {
           <>
             <TouchableOpacity
               style={styles.completeButton}
-              onPress={() => navigation.navigate('IncompleteProfileScreen')}
+              onPress={() => navigation.navigate('TipoEmpresaScreen')}
             >
               <Text style={styles.buttonText}>Completar Perfil</Text>
             </TouchableOpacity>
@@ -109,6 +106,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
+    marginRight: 153,
   },
   completionText: {
     color: 'white',
