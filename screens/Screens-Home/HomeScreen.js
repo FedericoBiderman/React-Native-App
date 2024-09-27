@@ -30,7 +30,7 @@ const categories = [
     { id: 23, name: 'Software enginner', image: require('../../assets/software-enginner.png') },
     { id: 24, name: 'FrontEnd developer', image: require('../../assets/FrontEnd.png') },
     { id: 25, name: 'Civil enginner', image: require('../../assets/civil-enginner.png') },
-    
+
 ];
 
 const profiles = [
@@ -62,8 +62,6 @@ const HomeScreen = () => {
                         <TouchableOpacity onPress={() => navigation.navigate("HelpScreen")} style={styles.iconButton}>
                             <Text style={styles.helpText}>Ayuda</Text>
                         </TouchableOpacity>
-
-
                     </View>
                 </View>
 
@@ -90,27 +88,25 @@ const HomeScreen = () => {
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
-
                 <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Perfiles destacados</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("AllProfilesScreen")}>
-                        <Text style={styles.seeMoreText}>Ver más</Text>
-                    </TouchableOpacity>
                 </View>
+
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.profilesContainer}>
                     {profiles.map((profile) => (
                         <View key={profile.id} style={styles.profileCard}>
                             <TouchableOpacity onPress={() => navigation.navigate("MatchScreen", { profile })}>
                                 <Image source={profile.image} style={styles.profileImage} />
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.profileInfoButton}
-                                onPress={() => navigation.navigate("ProfileScreen", { profile })}
-                            >
-                                <Ionicons name="information-circle-outline" size={24} color="white" />
-                            </TouchableOpacity>
                             <View style={styles.profileInfo}>
-                                <Text style={styles.profileName}>{profile.name}</Text>
+                                <View style={styles.nameAndPhotoContainer}>
+                                    <Text style={styles.profileName}>{profile.name}</Text>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate("ProfileScreen", { profile })}
+                                    >
+                                        <Image source={profile.image} style={styles.profileThumbnail} />
+                                    </TouchableOpacity>
+                                </View>
                                 <Text style={styles.profileCategory}>{profile.category}</Text>
                                 <View style={styles.ratingContainer}>
                                     <Ionicons name="star" size={16} color="#FFD700" />
@@ -247,25 +243,23 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 12,
         borderTopRightRadius: 12,
     },
-    profileInfoButton: {
-        position: "absolute",
-        top: 12,
-        right: 12,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        borderRadius: 16,
-        padding: 6,
-    },
     profileInfo: {
         padding: 16,
+    },
+    nameAndPhotoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 4,
     },
     profileName: {
         fontSize: 18,
         fontWeight: "bold",
-        marginBottom: 4,
     },
-    profileCategory: {
-        color: "gray",
-        marginBottom: 8,
+    profileThumbnail: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
     },
     ratingContainer: {
         flexDirection: "row",
@@ -300,6 +294,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 4,
     },
+    
 });
 
 export default HomeScreen;

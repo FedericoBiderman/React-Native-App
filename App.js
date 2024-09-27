@@ -30,8 +30,10 @@ import TrayectoriaAcademicaScreen from "./screens/Screens-CuentaProfPursuer/Tray
 import UbicacionGlobalScreen from "./screens/Screens-CuentaProfPursuer/UbicacionGlobalScreen";
 import UbicacionLocalScreen from "./screens/Screens-CuentaProfPursuer/UbicacionLocalScreen";
 import HabilidadesScreen from "./screens/Screens-CuentaProfPursuer/HabilidadesScreen";
-import CuentaProfTerminadoScreen from "./screens/Screens-CuentaProf/CuentaProfTerminadoScreen";
-import PreviewProfilePickerScreen from "./screens/Screens-CuentaProfPicker/PreviewProfilePickerScreen";
+import CuentaProfPickerTerminadoScreen from "./screens/Screens-CuentaProf/CuentaProfPickerTerminadoScreen";
+import CuentaProfPursuerTerminadoScreen from "./screens/Screens-CuentaProf/CuentaProfPursuerTerminadoScreen";
+import ProfilePreviewPickerScreen from "./screens/Screens-CuentaProfPicker/ProfilePreviewPickerScreen";
+import ProfilePreviewPursuerScreen from "./screens/Screens-CuentaProfPursuer/ProfilePreviewPursuerScreen";
 import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
 import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScreen";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -231,13 +233,23 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="CuentaProfTerminadoScreen"
-          component={CuentaProfTerminadoScreen}
+          name="CuentaProfPickerTerminadoScreen"
+          component={CuentaProfPickerTerminadoScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="PreviewProfilePickerScreen"
-          component={PreviewProfilePickerScreen}
+          name="CuentaProfPursuerTerminadoScreen"
+          component={CuentaProfPursuerTerminadoScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfilePreviewPickerScreen"
+          component={ProfilePreviewPickerScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfilePreviewPursuerScreen"
+          component={ProfilePreviewPursuerScreen}
           options={{ headerShown: false }}
         />
           <Stack.Screen

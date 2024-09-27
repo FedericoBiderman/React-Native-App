@@ -26,7 +26,7 @@ const PublicoObjetivoEmpresaScreen = () => {
 
   const handleContinue = () => {
     // Navigate to the next screen with the selected age range
-    navigation.navigate('CuentaProfTerminadoScreen', { ageRange: selectedRange });
+    navigation.navigate('CuentaProfPickerTerminadoScreen', { ageRange: selectedRange });
   };
 
   return (
@@ -35,7 +35,7 @@ const PublicoObjetivoEmpresaScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('CuentaProfTerminadoScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('CuentaProfPickerTerminadoScreen')}>
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
       </View>

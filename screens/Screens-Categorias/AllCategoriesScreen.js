@@ -34,11 +34,16 @@ const categories = [
 const AllCategoriesScreen = () => {
   const navigation = useNavigation();
 
+  const navigateToCategoryDetail = (category) => {
+    const screenName = `${category.name.replace(/\s+/g, '')}CategoryDetailScreen`;
+    navigation.navigate(screenName, { category });
+  };
+
   const renderCategory = (category) => (
     <TouchableOpacity
       key={category.id}
       style={styles.categoryCard}
-      onPress={() => navigation.navigate('CategoryDetailScreen', { category })}
+      onPress={() => navigateToCategoryDetail(category)}
     >
       <Image source={category.image} style={styles.categoryIcon} />
       <Text style={styles.categoryName}>{category.name}</Text>

@@ -26,7 +26,7 @@ const HabilidadesScreen = () => {
 
   const handleContinue = () => {
     // Navigate to the next screen with the selected age range
-    navigation.navigate('CuentaProfTerminadoScreen', { SkillsTypes: selectedSkills });
+    navigation.navigate('CuentaProfPursuerTerminadoScreen', { SkillsTypes: selectedSkills });
   };
 
   return (
