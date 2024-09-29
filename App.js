@@ -36,6 +36,8 @@ import ProfilePreviewPickerScreen from "./screens/Screens-CuentaProfPicker/Profi
 import ProfilePreviewPursuerScreen from "./screens/Screens-CuentaProfPursuer/ProfilePreviewPursuerScreen";
 import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
 import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScreen";
+import AllProfilesScreen from "./screens/Screens-Profile/AllProfilesScreen";
+import MatchScreen from "./screens/Screens-Match/MatchScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -260,6 +262,16 @@ export default function App() {
           <Stack.Screen
           name="AllCategoriesScreen"
           component={AllCategoriesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AllProfilesScreen"
+          component={AllProfilesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MatchScreen"
+          component={MatchScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
