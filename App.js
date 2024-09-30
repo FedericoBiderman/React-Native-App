@@ -11,6 +11,7 @@ import DNIScreen from "./screens/Screens-Register/DNIScreen";
 import SignUpFinalizedScreen from "./screens/Screens-Register/SignUpFinalizedScreen";
 import HomeScreen from "./screens/Screens-Home/HomeScreen";
 import ProfileScreen from "./screens/Screens-Profile/ProfileScreen";
+import PickerProfileScreen from "./screens/Screens-Profile-Picker/PickerProfileScreen";
 import OlvideContrasenaScreen from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen";
 import OlvideContrasenaScreen2 from "./screens/Screens-OlvideContrasena/OlvideContrasenaScreen2";
 import NewPasswordScreen from "./screens/Screens-NewPassword/NewPasswordScreen";
@@ -75,8 +76,8 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="ProfileScreen"
-        component={ProfileScreen}
+        name="PickerProfileScreen"
+        component={PickerProfileScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="person-outline" size={24} color={color} />
@@ -267,6 +268,11 @@ export default function App() {
         <Stack.Screen
           name="AllProfilesScreen"
           component={AllProfilesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PickerProfileScreen"
+          component={PickerProfileScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

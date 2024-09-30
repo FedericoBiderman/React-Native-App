@@ -80,6 +80,12 @@ const ProfilePreviewPickerScreen = () => {
             >
               <Text style={styles.buttonText}>Ir a la home</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.homeButton}
+              onPress={() => navigation.navigate('PickerProfileScreen')}
+            >
+              <Text style={styles.buttonText}>Ver Perfil</Text>
+            </TouchableOpacity>
           </>
         )}
      </ScrollView>
