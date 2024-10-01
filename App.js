@@ -38,6 +38,7 @@ import ProfilePreviewPursuerScreen from "./screens/Screens-CuentaProfPursuer/Pro
 import CategoryDetailScreen from "./screens/Screens-Categorias/CategoryDetailScreen";
 import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScreen";
 import AllProfilesScreen from "./screens/Screens-Profile/AllProfilesScreen";
+import EditProfileScreen from "./screens/Screens-Profile-Picker/EditProfileScreen";
 import MatchScreen from "./screens/Screens-Match/MatchScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -273,6 +274,11 @@ export default function App() {
         <Stack.Screen
           name="PickerProfileScreen"
           component={PickerProfileScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

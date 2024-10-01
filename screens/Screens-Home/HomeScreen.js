@@ -142,10 +142,10 @@ const HomeScreen = () => {
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('PickerProfileScreen')}>
               <View style={styles.userInfo}>
-                <Text style={styles.headerText}>Hola, Federico</Text>
-                <Ionicons name="chevron-forward" size={24} color="black" />
+                <Text style={styles.headerText}>Hola, IBM</Text>
+                <Ionicons name="chevron-forward" size={24} color="black"/>
               </View>
             </TouchableOpacity>
             <View style={styles.headerIcons}>
@@ -203,7 +203,7 @@ const HomeScreen = () => {
             <Ionicons name="search-outline" size={24} color="black" />
             <Text style={styles.tabText}>Buscar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('ProfileScreen')}>
+          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('PickerProfileScreen')}>
             <Ionicons name="person-outline" size={24} color="black" />
             <Text style={styles.tabText}>Perfil</Text>
           </TouchableOpacity>
