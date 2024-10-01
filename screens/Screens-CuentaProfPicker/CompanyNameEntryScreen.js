@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Animated, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 const CompanyNameEntryScreen = () => {
   const [companyName, setCompanyName] = useState('');
   const navigation = useNavigation();
+  const [animation] = useState(new Animated.Value(0));
+  const [progressAnimation] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(animation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(progressAnimation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: false,
+      })
+    ]).start();
+  }, []);
 
   const handleContinue = () => {
     navigation.navigate('TipoEmpresaScreen', { companyName });
@@ -21,54 +41,82 @@ const CompanyNameEntryScreen = () => {
     navigation.navigate('HomeScreen');
   };
 
+  const translateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [50, 0],
+  });
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  const progressWidth = progressAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '0%'],
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardAvoidingView}
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.gradient}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSkip}>
-            <Text style={styles.skipText}>Skip</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '0%' }]} />
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.title}>Tu Empresa, Tu Orgullo</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Escribe el nombre de tu empresa"
-              value={companyName}
-              onChangeText={setCompanyName}
-            />
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.keyboardAvoidingView}
+        >
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSkip}>
+              <Text style={styles.skipText}>Omitir</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.description}>Así es como tu empresa será reconocida</Text>
-        </View>
+          <View style={styles.progressBarContainer}>
+            <View style={styles.progressBar}>
+              <Animated.View 
+                style={[
+                  styles.progressFill, 
+                  { width: progressWidth }
+                ]} 
+              />
+            </View>
+          </View>
+          <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
+            <Text style={styles.title}>Tu Empresa, Tu Orgullo</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Escribe el nombre de tu empresa"
+                placeholderTextColor="#A0A0A0"
+                value={companyName}
+                onChangeText={setCompanyName}
+              />
+            </View>
+            <Text style={styles.description}>Así es como tu empresa será reconocida</Text>
+          </Animated.View>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={[styles.continueButton, !companyName && styles.continueButtonDisabled]}
-            onPress={handleContinue}
-            disabled={!companyName}
-          >
-            <Text style={styles.buttonText}>Continuar</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.goHomeButton}
-            onPress={handleGoHome}
-          >
-            <Text style={styles.buttonText}>Go home, continue later</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+              style={[styles.continueButton, !companyName && styles.continueButtonDisabled]}
+              onPress={handleContinue}
+              disabled={!companyName}
+            >
+              <Text style={styles.buttonText}>Continuar</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.goHomeButton}
+              onPress={handleGoHome}
+            >
+              <Text style={styles.goHomeButtonText}>Volver al inicio y continuar después</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -76,7 +124,9 @@ const CompanyNameEntryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+  },
+  gradient: {
+    flex: 1,
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -89,69 +139,79 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: 'black',
+    color: 'white',
+  },
+  progressBarContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  progressBar: {
+    height: 10,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    width: width * 0.7,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#4CAF50',
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 16,
+    color: 'white',
+    marginBottom: 24,
+    textAlign: 'center',
   },
   inputContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 12,
     marginBottom: 16,
+    overflow: 'hidden',
   },
   input: {
-    padding: 12,
-    fontSize: 16,
+    padding: 16,
+    fontSize: 18,
+    color: 'white',
   },
   description: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.7)',
     marginBottom: 24,
+    textAlign: 'center',
   },
   buttonContainer: {
-    padding: 16,
+    padding: 24,
   },
   continueButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#4CAF50',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
     marginBottom: 16,
   },
   continueButtonDisabled: {
-    backgroundColor: '#A0A0A0',
+    backgroundColor: 'rgba(76, 175, 80, 0.5)',
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   goHomeButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: 'red',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
   },
-  progressBar: {
-    height: 25,
-    backgroundColor: '#e0e0e0',
-    marginLeft: 120,
-    width: 160,
-    marginBottom: 20,
-    borderRadius: 30,
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 30,
-    width: 160,
-    backgroundColor: '#4CAF50',
+  goHomeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
