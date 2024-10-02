@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Modal } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput, Animated, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
+
+const { width } = Dimensions.get('window');
 
 const universitiesTypes = [
-  { name: 'University of California, Los Angeles', country: '🇺🇸', flag: '🇺🇸'},
-  { name: 'University of Central Lancashire', country: '🇬🇧', flag: '🇬🇧'},
-  { name: 'Universidad de Buenos Aires', country: '🇦🇷', flag: '🇦🇷' },
-  { name: 'Massachusetts Institute of Technology', country: '🇺🇸', flag: '🇺🇸' },
-  { name: 'University of Stanford', country: '🇺🇸', flag: '🇺🇸' },
-  { name: 'University of Cambridge', country: '🇬🇧', flag: '🇬🇧' },
-  { name: 'University of Sao Paulo', country: '🇧🇷', flag: '🇧🇷' },
-  { name: 'Pontifical Catholic University of Chile', country: '🇨🇱', flag: '🇨🇱' },
+  { id: 'ucla', name: 'University of California, Los Angeles', country: 'Estados Unidos', flag: '🇺🇸'},
+  { id: 'uclan', name: 'University of Central Lancashire', country: 'Reino Unido', flag: '🇬🇧'},
+  { id: 'uba', name: 'Universidad de Buenos Aires', country: 'Argentina', flag: '🇦🇷' },
+  { id: 'mit', name: 'Massachusetts Institute of Technology', country: 'Estados Unidos', flag: '🇺🇸' },
+  { id: 'stanford', name: 'Stanford University', country: 'Estados Unidos', flag: '🇺🇸' },
+  { id: 'cambridge', name: 'University of Cambridge', country: 'Reino Unido', flag: '🇬🇧' },
+  { id: 'usp', name: 'University of Sao Paulo', country: 'Brasil', flag: '🇧🇷' },
+  { id: 'pucchile', name: 'Pontifical Catholic University of Chile', country: 'Chile', flag: '🇨🇱' },
 ];
 
 const TrayectoriaAcademicaScreen = () => {
@@ -21,9 +24,27 @@ const TrayectoriaAcademicaScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [animation] = useState(new Animated.Value(0));
+  const [progressAnimation] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(animation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(progressAnimation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: false,
+      })
+    ]).start();
+  }, []);
 
   const filteredUniversities = universitiesTypes.filter(uni => 
-    uni.name.toLowerCase().includes(searchQuery.toLowerCase())
+    uni.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    uni.country.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSelectUniversity = (university) => {
@@ -39,70 +60,124 @@ const TrayectoriaAcademicaScreen = () => {
     navigation.navigate('HomeScreen');
   };
 
+  const translateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [50, 0],
+  });
+
+  const opacity = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  const progressWidth = progressAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['33.33%', '50%'],
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#007AFF" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: '33.33%' }]} />
-      </View>
-      <View style={styles.content}>
-        <Text style={styles.title}>Tu Trayectoria Académica.</Text>
-        <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
-          <Text style={selectedUniversity ? styles.inputText : styles.placeholderText}>
-            {selectedUniversity || 'Describe tu formación académica'}
-          </Text>
-        </TouchableOpacity>
-        <Text style={styles.subtitle}>Destaca tus logros y conocimientos.</Text>
-        <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.goHomeButton} onPress={handleGoHome}>
-          <Text style={styles.buttonText}>Go home, continue later</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.gradient}
       >
-        <View style={styles.modalView}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Describe tu formación académica</Text>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Ionicons name="close" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Buscar universidad"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          <FlatList
-            data={filteredUniversities}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.universityItem}
-                onPress={() => handleSelectUniversity(item)}
-              >
-                <Text>{item.name}</Text>
-                <Text>{item.flag}</Text>
-              </TouchableOpacity>
-            )}
-          />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('UbicacionGlobalScreen')}>
+            <Text style={styles.skipText}>Omitir</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
+        <View style={styles.progressBarContainer}>
+          <View style={styles.progressBar}>
+            <Animated.View 
+              style={[
+                styles.progressFill, 
+                { width: progressWidth }
+              ]} 
+            />
+          </View>
+        </View>
+
+        <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
+          <Text style={styles.title}>Tu Trayectoria Académica</Text>
+          
+          <TouchableOpacity 
+            style={styles.inputContainer}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={selectedUniversity ? styles.selectedText : styles.placeholderText}>
+              {selectedUniversity || 'Describe tu formación académica'}
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.description}>
+            Destaca tus logros y conocimientos.
+          </Text>
+        </Animated.View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[styles.continueButton, !selectedUniversity && styles.continueButtonDisabled]}
+            onPress={handleContinue}
+            disabled={!selectedUniversity}
+          >
+            <Text style={styles.buttonText}>Continuar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.goHomeButton}
+            onPress={handleGoHome}
+          >
+            <Text style={styles.goHomeButtonText}>Volver al inicio y continuar después</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Describe tu formación académica</Text>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Ionicons name="close" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Buscar universidad o país..."
+                placeholderTextColor="#A0A0A0"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+
+              <FlatList
+                data={filteredUniversities}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.universityItem}
+                    onPress={() => handleSelectUniversity(item)}
+                  >
+                    <View>
+                      <Text style={styles.universityText}>{item.name}</Text>
+                      <Text style={styles.countryText}>{item.country}</Text>
+                    </View>
+                    <Text style={styles.flagText}>{item.flag}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -110,7 +185,9 @@ const TrayectoriaAcademicaScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+  },
+  gradient: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -119,96 +196,133 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   skipText: {
-    color: '#007AFF',
     fontSize: 16,
+    color: 'white',
+  },
+  progressBarContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
   progressBar: {
-    height: 25,
-    backgroundColor: '#e0e0e0',
-    marginLeft: 120,
-    width: 160,
-    marginBottom: 20,
-    borderRadius: 30,
+    height: 10,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    width: width * 0.7,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 30,
-    width: 160,
     backgroundColor: '#4CAF50',
   },
   content: {
-    padding: 20,
+    flex: 1,
+    padding: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: 'white',
+    marginBottom: 24,
+    textAlign: 'center',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-  },
-  inputText: {
-    color: 'black',
+  inputContainer: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
   },
   placeholderText: {
-    color: '#999',
+    color: '#A0A0A0',
+    fontSize: 18,
   },
-  subtitle: {
-    color: '#666',
-    marginBottom: 20,
+  selectedText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  description: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.7)',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    padding: 24,
   },
   continueButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#4CAF50',
+    padding: 16,
+    borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 16,
   },
-  goHomeButton: {
-    backgroundColor: '#FF3B30',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
+  continueButtonDisabled: {
+    backgroundColor: 'rgba(76, 175, 80, 0.5)',
   },
   buttonText: {
     color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
   },
-  modalView: {
+  goHomeButton: {
+    backgroundColor: '#FF3B30',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  goHomeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
     flex: 1,
-    marginTop: 50,
-    backgroundColor: 'white',
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#3b5998',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
+    padding: 16,
+    maxHeight: '80%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'white',
   },
   searchInput: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    color: 'white',
   },
   universityItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 15,
+    alignItems: 'center',
+    padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  universityText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  countryText: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+  },
+  flagText: {
+    fontSize: 24,
   },
 });
 
