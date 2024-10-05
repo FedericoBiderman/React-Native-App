@@ -23,7 +23,7 @@ const CreateProfessionalAccountScreen = () => {
           style={[styles.button, styles.pickerButton]}
           onPress={() => navigation.navigate('DataEntryScreen', { role: 'Picker' })}
         >
-          <Text style={styles.buttonText}>Picker</Text>
+          <Text style={styles.pickerButtonText}>Picker</Text>
         </TouchableOpacity>
       </Tooltip>
     </View>
@@ -54,8 +54,15 @@ const styles = StyleSheet.create({
       width: 250,
     },
     pickerButton: {
-      backgroundColor: '#FF3B30',
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderColor: '#007aff',
       width: 250,
+    },
+    pickerButtonText: {
+      color: '#007aff',
+      textAlign: 'center',
+      fontWeight: 'bold',
     },
     buttonText: {
       color: 'white',

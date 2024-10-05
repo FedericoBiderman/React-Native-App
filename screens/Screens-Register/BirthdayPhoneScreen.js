@@ -223,7 +223,7 @@ const BirthdayPhoneScreen = ({ route }) => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Text style={styles.title}>Ingrese su Fecha de Nacimiento y Número de Teléfono</Text>
+                <Text style={styles.title}>Birthday and phone number.</Text>
 
                 <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: '20%' }]} />

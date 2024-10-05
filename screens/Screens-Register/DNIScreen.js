@@ -36,7 +36,7 @@ const DNIScreen = ({ route }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('SignUpFinalizedScreen', { ...route.params })}>
-                    <Text style={styles.buttonText}>Continue</Text>
+                    <Text style={styles.continueButtonText}>Continue</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     scanButton: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#007aff',
         paddingVertical: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -94,7 +94,9 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     continueButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '#007aff',
         paddingVertical: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -103,6 +105,11 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    continueButtonText: {
+        color: '#007aff',
         fontSize: 18,
         fontWeight: 'bold',
     },

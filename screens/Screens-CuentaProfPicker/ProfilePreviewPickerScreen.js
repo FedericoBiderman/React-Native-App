@@ -74,27 +74,12 @@ const ProfilePreviewPickerScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.gradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.progressBarContainer}>
-          <View style={styles.progressBar}>
-            <Animated.View 
-              style={[
-                styles.progressFill, 
-                { width: progressWidth }
-              ]} 
-            />
-          </View>
-        </View>
-
+      <StatusBar style="dark" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
             <View style={styles.profileImageContainer}>
@@ -119,7 +104,7 @@ const ProfilePreviewPickerScreen = () => {
                 style={styles.homeButton}
                 onPress={() => navigation.navigate('HomeScreen')}
               >
-                <Text style={styles.buttonText}>Ir a la Home</Text>
+                <Text style={styles.buttonText}>Home</Text>
               </TouchableOpacity>
             ) : (
               <>
@@ -133,7 +118,7 @@ const ProfilePreviewPickerScreen = () => {
                   style={styles.homeButton}
                   onPress={() => navigation.navigate('HomeScreen')}
                 >
-                  <Text style={styles.buttonText}>Ir a la home</Text>
+                  <Text style={styles.HomeButtonText}>Ir a la home</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.profileButton}
@@ -145,7 +130,6 @@ const ProfilePreviewPickerScreen = () => {
             )}
           </Animated.View>
         </ScrollView>
-      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -153,34 +137,13 @@ const ProfilePreviewPickerScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  gradient: {
-    flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-  },
-  skipText: {
-    fontSize: 16,
-    color: 'white',
-  },
-  progressBarContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  progressBar: {
-    height: 10,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    width: width * 0.7,
-    borderRadius: 5,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#4CAF50',
   },
   scrollContent: {
     flexGrow: 1,
@@ -224,7 +187,7 @@ const styles = StyleSheet.create({
   itemLabel: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   itemValueContainer: {
     flexDirection: 'row',
@@ -233,24 +196,31 @@ const styles = StyleSheet.create({
   itemValue: {
     fontSize: 16,
     marginRight: 10,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'black',
   },
   completeButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007AFF',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginVertical: 10,
+    marginBottom: 16,
   },
+
   homeButton: {
-    backgroundColor: '#2196F3',
+    borderColor: '#007AFF',
+    borderWidth: 2,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginVertical: 10,
+    backgroundColor: 'transparent',
+  },
+  HomeButtonText: {
+    color: '#007AFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   profileButton: {
-    backgroundColor: '#FF9800',
+    backgroundColor: '#FFBF00',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',

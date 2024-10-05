@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 
 const { width } = Dimensions.get('window');
@@ -74,104 +73,97 @@ const UbicacionGlobEmpresaScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.gradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('ImpactoLocalEmpresaScreen')}>
-            <Text style={styles.skipText}>Omitir</Text>
-          </TouchableOpacity>
+      <StatusBar style="dark" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ImpactoLocalEmpresaScreen')}>
+          <Text style={styles.skipText}>Omitir</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.progressBarContainer}>
+        <View style={styles.progressBar}>
+          <Animated.View 
+            style={[
+              styles.progressFill, 
+              { width: progressWidth }
+            ]} 
+          />
         </View>
-        <View style={styles.progressBarContainer}>
-          <View style={styles.progressBar}>
-            <Animated.View 
-              style={[
-                styles.progressFill, 
-                { width: progressWidth }
-              ]} 
+      </View>
+
+      <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
+        <Text style={styles.title}>Ubicación Global</Text>
+        <Text style={styles.description}>
+          Muestra tu presencia internacional.
+        </Text>
+        <TouchableOpacity 
+          style={styles.inputContainer}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={selectedCountry ? styles.selectedText : styles.placeholderText}>
+            {selectedCountry || '¿En qué país está ubicada tu empresa?'}
+          </Text>
+        </TouchableOpacity>
+      </Animated.View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={[styles.continueButton, !selectedCountry && styles.continueButtonDisabled]}
+          onPress={handleContinue}
+          disabled={!selectedCountry}
+        >
+          <Text style={styles.buttonText}>Continuar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.goHomeButton}
+          onPress={handleGoHome}
+        >
+          <Text style={styles.goHomeButtonText}>Home</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>¿En qué país está ubicada tu empresa?</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar..."
+              placeholderTextColor="#A0A0A0"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+
+            <FlatList
+              data={filteredCountries}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.optionItem}
+                  onPress={() => handleSelectCountry(item)}
+                >
+                  <Text style={styles.optionText}>{item.name}</Text>
+                  <Text style={styles.flagText}>{item.flag}</Text>
+                </TouchableOpacity>
+              )}
             />
           </View>
         </View>
-
-        <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
-          <Text style={styles.title}>Ubicación Global</Text>
-          
-          <TouchableOpacity 
-            style={styles.inputContainer}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={selectedCountry ? styles.selectedText : styles.placeholderText}>
-              {selectedCountry || '¿En qué país está ubicada tu empresa?'}
-            </Text>
-          </TouchableOpacity>
-
-          <Text style={styles.description}>
-            Muestra tu presencia internacional.
-          </Text>
-        </Animated.View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={[styles.continueButton, !selectedCountry && styles.continueButtonDisabled]}
-            onPress={handleContinue}
-            disabled={!selectedCountry}
-          >
-            <Text style={styles.buttonText}>Continuar</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.goHomeButton}
-            onPress={handleGoHome}
-          >
-            <Text style={styles.goHomeButtonText}>Volver al inicio y continuar después</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>¿En qué país está ubicada tu empresa?</Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Ionicons name="close" size={24} color="white" />
-                </TouchableOpacity>
-              </View>
-
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Buscar..."
-                placeholderTextColor="#A0A0A0"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-
-              <FlatList
-                data={filteredCountries}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.countryItem}
-                    onPress={() => handleSelectCountry(item)}
-                  >
-                    <Text style={styles.countryText}>{item.name}</Text>
-                    <Text style={styles.flagText}>{item.flag}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </Modal>
-      </LinearGradient>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -179,9 +171,7 @@ const UbicacionGlobEmpresaScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  gradient: {
-    flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -191,7 +181,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: 'white',
+    color: 'black',
   },
   progressBarContainer: {
     alignItems: 'center',
@@ -199,7 +189,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 10,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(100,100,100,0.3)',
     width: width * 0.7,
     borderRadius: 5,
     overflow: 'hidden',
@@ -215,42 +205,50 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
     marginBottom: 24,
     textAlign: 'center',
   },
   inputContainer: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    borderColor: '#e0e0e0',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
   },
   placeholderText: {
     color: '#A0A0A0',
     fontSize: 18,
   },
   selectedText: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   description: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'black',
     marginBottom: 24,
     textAlign: 'center',
   },
   buttonContainer: {
-    padding: 24,
+    flex: 3.25,
+    width: '100%',
+    paddingHorizontal: 24,
   },
   continueButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007AFF',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 16,
   },
   continueButtonDisabled: {
-    backgroundColor: 'rgba(76, 175, 80, 0.5)',
+    backgroundColor: '#B0B0B0',
   },
   buttonText: {
     color: 'white',
@@ -258,13 +256,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   goHomeButton: {
-    backgroundColor: '#FF3B30',
+    borderColor: '#007AFF',
+    borderWidth: 2,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   goHomeButtonText: {
-    color: 'white',
+    color: '#007AFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#3b5998',
+    backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
@@ -289,26 +289,24 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   searchInput: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 8,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 12,
     padding: 12,
     marginBottom: 16,
-    color: 'white',
+    fontSize: 16,
   },
-  countryItem: {
+  optionItem: {
+    padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
   },
-  countryText: {
-    color: 'white',
+  optionText: {
     fontSize: 16,
+    color: 'black',
   },
   flagText: {
     fontSize: 24,

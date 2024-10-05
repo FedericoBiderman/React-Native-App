@@ -3,19 +3,19 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, StatusBar }
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false); // Estado para el checkbox
   const navigation = useNavigation();
   const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
 
   const handleLogin = async () => {
     try {
       const response = await axios.post(`${baseUrl}/api/user/login`, {
-        username: email, // Cambié "username" por "email"
+        username: email, 
         password,
       });
 
@@ -36,11 +36,15 @@ export default function LoginScreen() {
     setSecureTextEntry(!secureTextEntry);
   };
 
+  const toggleRememberMe = () => {
+    setRememberMe(!rememberMe);
+  };
+
   return (
-    <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={24} color="white" />
+        <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
 
       <Text style={styles.title}>Welcome Back!</Text>
@@ -59,24 +63,37 @@ export default function LoginScreen() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Password</Text>
-        <View style={styles.passwordContainer}>
+        <View style={styles.inputWrapper}>
           <TextInput
-            style={styles.input}
+            style={styles.passwordInput}
             placeholder="Password"
             secureTextEntry={secureTextEntry}
             value={password}
             onChangeText={setPassword}
             placeholderTextColor="#b0b0b0"
           />
-          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
-            <Ionicons name={secureTextEntry ? "eye-off" : "eye"} size={24} color="white" />
+          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
+            <Ionicons name={secureTextEntry ? "eye-off" : "eye"} size={24} color="grey" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('OlvideContrasenaScreen')}>
-        <Text style={styles.forgotPasswordText}>Forgot my password?</Text>
-      </TouchableOpacity>
+      <View style={styles.rememberForgotContainer}>
+        {/* Checkbox de Remember me */}
+        <TouchableOpacity onPress={toggleRememberMe} style={styles.checkboxContainer}>
+          <Ionicons
+            name={rememberMe ? "checkbox-outline" : "square-outline"}
+            size={24}
+            color="black"
+          />
+          <Text style={styles.rememberMeText}>Remember me</Text>
+        </TouchableOpacity>
+
+        {/* Enlace de Forgot password */}
+        <TouchableOpacity onPress={() => navigation.navigate('OlvideContrasenaScreen')}>
+          <Text style={styles.forgotPasswordText}>Forgot my password?</Text>
+        </TouchableOpacity>
+      </View>
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Log in</Text>
@@ -88,7 +105,7 @@ export default function LoginScreen() {
           <Text style={styles.createAccountText}>Create an account</Text>
         </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -97,6 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     justifyContent: "center",
+    backgroundColor: '#fff',
   },
   backButton: {
     position: "absolute",
@@ -107,37 +125,68 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
-    color: "white",
+    color: "black",
     marginBottom: 40,
   },
   inputContainer: {
     marginBottom: 20,
   },
+
+  input: {
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#e0e0e0',
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
+    paddingHorizontal: 15,
+  },
   label: {
     fontSize: 16,
     marginBottom: 5,
-    color: "#ffffff",
+    color: "black",
   },
-  input: {
+  inputWrapper: {
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#e0e0e0',
     borderWidth: 1,
-    borderColor: "#ffffff",
     borderRadius: 10,
-    paddingVertical: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  passwordInput: {
+    flex: 1, // Ocupar el espacio disponible
+    height: 50,
     paddingHorizontal: 15,
-    fontSize: 16,
-    color: "#ffffff",
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ffffff",
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  icon: {
+  eyeIcon: {
     padding: 10,
+  },
+  rememberForgotContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginLeft: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rememberMeText: {
+    fontSize: 16,
+    marginLeft: 10,
+    color: "black",
   },
   forgotPasswordText: {
     fontSize: 16,
@@ -163,7 +212,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 16,
-    color: "#ffffff",
+    color: "black",
   },
   createAccountText: {
     fontSize: 16,

@@ -65,7 +65,7 @@ const GenderScreen = ({ route }) => {
             </Modal>
 
             <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-                <Text style={styles.buttonText}>Continuar</Text>
+                <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     continueButton: {
         backgroundColor: '#007AFF',
         padding: 15,
-        borderRadius: 5,
+        borderRadius: 10,
         alignItems: 'center',
     },
     buttonText: {

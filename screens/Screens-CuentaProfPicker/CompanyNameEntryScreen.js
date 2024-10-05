@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Animated, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Animated, Dimensions, Keyboard } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -13,8 +12,22 @@ const CompanyNameEntryScreen = () => {
   const navigation = useNavigation();
   const [animation] = useState(new Animated.Value(0));
   const [progressAnimation] = useState(new Animated.Value(0));
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // Cuando el teclado está visible
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // Cuando el teclado se oculta
+      }
+    );
+
     Animated.parallel([
       Animated.timing(animation, {
         toValue: 1,
@@ -27,6 +40,11 @@ const CompanyNameEntryScreen = () => {
         useNativeDriver: false,
       })
     ]).start();
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
   }, []);
 
   const handleContinue = () => {
@@ -56,20 +74,17 @@ const CompanyNameEntryScreen = () => {
     outputRange: ['0%', '0%'],
   });
 
-  return (
+
+    return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.gradient}
-      >
+      <StatusBar style="dark" />
         <KeyboardAvoidingView 
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardAvoidingView}
         >
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color="white" />
+              <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleSkip}>
               <Text style={styles.skipText}>Omitir</Text>
@@ -78,15 +93,13 @@ const CompanyNameEntryScreen = () => {
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBar}>
               <Animated.View 
-                style={[
-                  styles.progressFill, 
-                  { width: progressWidth }
-                ]} 
+                style={[styles.progressFill, { width: progressWidth }]} 
               />
             </View>
           </View>
           <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
             <Text style={styles.title}>Tu Empresa, Tu Orgullo</Text>
+            <Text style={styles.description}>Así es como tu empresa será reconocida</Text>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -96,27 +109,28 @@ const CompanyNameEntryScreen = () => {
                 onChangeText={setCompanyName}
               />
             </View>
-            <Text style={styles.description}>Así es como tu empresa será reconocida</Text>
           </Animated.View>
 
-          <View style={styles.buttonContainer}>
+          <View style={[
+            styles.buttonContainer, 
+            isKeyboardVisible && styles.buttonContainerKeyboardVisible // Ajuste cuando el teclado esté visible
+          ]}>
             <TouchableOpacity 
               style={[styles.continueButton, !companyName && styles.continueButtonDisabled]}
               onPress={handleContinue}
               disabled={!companyName}
             >
-              <Text style={styles.buttonText}>Continuar</Text>
+              <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
               style={styles.goHomeButton}
               onPress={handleGoHome}
             >
-              <Text style={styles.goHomeButtonText}>Volver al inicio y continuar después</Text>
+              <Text style={styles.goHomeButtonText}>Home</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
-      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -124,9 +138,7 @@ const CompanyNameEntryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  gradient: {
-    flex: 1,
+    backgroundColor: '#fff', // Fondo blanco
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -139,7 +151,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: 'white',
+    color: 'black', // Color negro para el texto de Omitir
   },
   progressBarContainer: {
     alignItems: 'center',
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 10,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(100,100,100,0.3)',
     width: width * 0.7,
     borderRadius: 5,
     overflow: 'hidden',
@@ -163,39 +175,52 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 24,
+    color: 'black', // Título en negro
+    marginBottom: 10, // Reducir espacio con el subtítulo
     textAlign: 'center',
   },
   inputContainer: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: '#fff', // Fondo del input ligeramente gris
     borderRadius: 12,
     marginBottom: 16,
     overflow: 'hidden',
+    borderColor: '#e0e0e0',
+    borderWidth: 1,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
   },
   input: {
     padding: 16,
     fontSize: 18,
-    color: 'white',
+    color: 'black', // Color del texto de input en negro
   },
   description: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
-    marginBottom: 24,
+    color: 'black', // Subtítulo en negro
+    marginBottom: 20, // Margen reducido para estar justo debajo del título
     textAlign: 'center',
   },
   buttonContainer: {
-    padding: 24,
+    flex: 4, // Ajustar la posición debajo del input
+    width: '100%',
+    paddingHorizontal: 24,
+  },
+  buttonContainerKeyboardVisible: {
+    position: "absolute",
+    bottom: 20, // Elevar botones cuando el teclado esté visible
   },
   continueButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007AFF', // Botón azul
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 16,
   },
   continueButtonDisabled: {
-    backgroundColor: 'rgba(76, 175, 80, 0.5)',
+    backgroundColor: '#B0B0B0', // Botón deshabilitado en gris
   },
   buttonText: {
     color: 'white',
@@ -203,16 +228,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   goHomeButton: {
-    backgroundColor: 'red',
+    borderColor: '#007AFF', // Borde rojo
+    borderWidth: 2, // Ancho del borde
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
+    backgroundColor: 'transparent', // Fondo transparente
   },
   goHomeButtonText: {
-    color: 'white',
+    color: '#007AFF', // Texto rojo
     fontSize: 16,
     fontWeight: 'bold',
   },
 });
+
 
 export default CompanyNameEntryScreen;

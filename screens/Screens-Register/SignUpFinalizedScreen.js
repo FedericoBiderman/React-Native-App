@@ -45,19 +45,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     progressBar: {
-        height: 25,
+        height: 8,
         backgroundColor: '#e0e0e0',
-        marginLeft: 120,
-        width: 160,
+        borderRadius: 4,
         marginBottom: 20,
-        borderRadius: 30,
-    },
-    progressFill: {
+      },
+      progressFill: {
         height: '100%',
-        borderRadius: 30,
-        width: 160,
+        borderRadius: 4,
         backgroundColor: '#4CAF50',
-    },
+      },
     title: {
         fontSize: 18,
         textAlign: "center",

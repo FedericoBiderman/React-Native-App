@@ -25,7 +25,7 @@ const DataEntryScreen = ({ route }) => {
         style={styles.continueButton}
         onPress={handleContinue}
       >
-        <Text style={styles.buttonText}>Continuar</Text>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
