@@ -136,7 +136,7 @@ const ImpactoLocalEmpresaScreen = () => {
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>¿En qué barrio/localidad está ubicada tu empresa?</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Ionicons name="close" size={24} color="white" />
+                  <Ionicons name="close" size={24} color="black" />
                 </TouchableOpacity>
               </View>
 

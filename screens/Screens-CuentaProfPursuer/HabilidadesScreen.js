@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput, Animated, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5  } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 
 const { width } = Dimensions.get('window');
@@ -78,38 +77,37 @@ const HabilidadesScreen = () => {
 
   const progressWidth = progressAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['66.67%', '83.33%'],
+    outputRange: ['71.42%', '85.71%'],
   });
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        style={styles.gradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('CuentaProfTerminadoScreen')}>
-            <Text style={styles.skipText}>Omitir</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.progressBarContainer}>
-          <View style={styles.progressBar}>
-            <Animated.View 
-              style={[
-                styles.progressFill, 
-                { width: progressWidth }
-              ]} 
-            />
-          </View>
-        </View>
+    <StatusBar style="dark" />
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('CuentaProfPursuerTerminadoScreen')}>
+        <Text style={styles.skipText}>Omitir</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.progressBarContainer}>
+      <View style={styles.progressBar}>
+        <Animated.View 
+          style={[
+            styles.progressFill, 
+            { width: progressWidth }
+          ]} 
+        />
+      </View>
+    </View>
+
 
         <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
           <Text style={styles.title}>Tus Habilidades</Text>
-          
+          <Text style={styles.description}>
+            Así es como los empleadores verán lo que puedes aportar.
+          </Text>          
           <TouchableOpacity 
             style={styles.inputContainer}
             onPress={() => setModalVisible(true)}
@@ -118,10 +116,6 @@ const HabilidadesScreen = () => {
               {selectedSkills.length > 0 ? selectedSkills.map(skill => skill.name).join(', ') : 'Describe tus habilidades clave.'}
             </Text>
           </TouchableOpacity>
-
-          <Text style={styles.description}>
-            Así es como los empleadores verán lo que puedes aportar.
-          </Text>
         </Animated.View>
 
         <View style={styles.buttonContainer}>
@@ -137,7 +131,7 @@ const HabilidadesScreen = () => {
             style={styles.goHomeButton}
             onPress={handleGoHome}
           >
-            <Text style={styles.goHomeButtonText}>Volver al inicio y continuar después</Text>
+            <Text style={styles.goHomeButtonText}>Home</Text>
           </TouchableOpacity>
         </View>
 
@@ -152,7 +146,7 @@ const HabilidadesScreen = () => {
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Selecciona tus habilidades</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Ionicons name="close" size={24} color="white" />
+                  <Ionicons name="close" size={24} color="black" />
                 </TouchableOpacity>
               </View>
 
@@ -186,7 +180,6 @@ const HabilidadesScreen = () => {
             </View>
           </View>
         </Modal>
-      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -194,9 +187,7 @@ const HabilidadesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  gradient: {
-    flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -206,7 +197,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: 'white',
+    color: 'black',
   },
   progressBarContainer: {
     alignItems: 'center',
@@ -214,7 +205,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 10,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(100,100,100,0.3)',
     width: width * 0.7,
     borderRadius: 5,
     overflow: 'hidden',
@@ -230,42 +221,50 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
     marginBottom: 24,
     textAlign: 'center',
   },
   inputContainer: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    borderColor: '#e0e0e0',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
   },
   placeholderText: {
     color: '#A0A0A0',
     fontSize: 18,
   },
   selectedText: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   description: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'black',
     marginBottom: 24,
     textAlign: 'center',
   },
   buttonContainer: {
-    padding: 24,
+    flex: 2.5,
+    width: '100%',
+    paddingHorizontal: 24,
   },
   continueButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#007AFF',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 16,
   },
   continueButtonDisabled: {
-    backgroundColor: 'rgba(76, 175, 80, 0.5)',
+    backgroundColor: '#B0B0B0',
   },
   buttonText: {
     color: 'white',
@@ -273,13 +272,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   goHomeButton: {
-    backgroundColor: '#FF3B30',
+    borderColor: '#007AFF',
+    borderWidth: 2,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   goHomeButtonText: {
-    color: 'white',
+    color: '#007AFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#3b5998',
+    backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
@@ -304,30 +305,31 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   searchInput: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 8,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 12,
     padding: 12,
     marginBottom: 16,
-    color: 'white',
+    fontSize: 16,
   },
   skillItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: 'rgba(100,100,100,0.3)',
   },
   selectedSkillItem: {
     backgroundColor: 'rgba(76, 175, 80, 0.2)',
   },
   skillIcon: {
     marginRight: 16,
+    color: 'black',
   },
   skillText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     flex: 1,
   },
