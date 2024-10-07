@@ -1,11 +1,31 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated, Dimensions, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+const { width } = Dimensions.get('window');
 
 const DNIScreen = ({ route }) => {
     const navigation = useNavigation();
+    const [animation] = useState(new Animated.Value(0));
+    const [progressAnimation] = useState(new Animated.Value(0));
+
+    useEffect(() => {
+        Animated.parallel([
+          Animated.timing(animation, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(progressAnimation, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: false,
+          })
+        ]).start();
+      }, []);
 
     const handleScanDNI = async () => {
         let result = await ImagePicker.launchCameraAsync({
@@ -21,16 +41,42 @@ const DNIScreen = ({ route }) => {
         }
     };
 
+    const translateY = animation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [50, 0],
+      });
+    
+      const opacity = animation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+      });
+    
+      const progressWidth = progressAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['60%', '80%'],
+      });
+    
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.progressBar}>
-                    <View style={[styles.progressFill, { width: '80%' }]} />
-                </View>
-
-                <Text style={styles.title}>Scan Your DNI</Text>
-                <Text style={styles.subtitle}>Please scan your DNI to continue.</Text>
-
+        <StatusBar style="dark" />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('SignUpFinalizedScreen')}>
+            <Text style={styles.skipText}>Omitir</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.progressBarContainer}>
+          <View style={styles.progressBar}>
+            <Animated.View style={[styles.progressFill, { width: progressWidth }]} />
+          </View>
+        </View>
+  
+        <ScrollView>
+          <Animated.View style={[{ opacity, transform: [{ translateY }] }]}>
+            <Text style={styles.title}>Scan your DNI </Text>
+            <Text style={styles.subtitle}>Please scan your DNI to continue </Text>
                 <TouchableOpacity style={styles.scanButton} onPress={handleScanDNI}>
                     <Text style={styles.buttonText}>Scan DNI</Text>
                 </TouchableOpacity>
@@ -38,6 +84,13 @@ const DNIScreen = ({ route }) => {
                 <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('SignUpFinalizedScreen', { ...route.params })}>
                     <Text style={styles.continueButtonText}>Continue</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+        <Text style={styles.loginText}>
+          Do you already have an account? <Text style={styles.loginHighlight}>Log in</Text>
+        </Text>
+        </TouchableOpacity>
+        </Animated.View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -46,28 +99,33 @@ const DNIScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-        padding: 20,
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'center',
+        backgroundColor: '#fff',
+      },
+      header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 40,
-    },
-    progressBar: {
-        height: 10,
-        width: '100%',
+        padding: 16,
+      },
+      skipText: {
+        fontSize: 16,
+        color: 'black',
+      },
+      progressBarContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+      },
+      progressBar: {
+        height: 8,
         backgroundColor: '#e0e0e0',
-        borderRadius: 5,
+        width: width * 0.7,
+        borderRadius: 4,
         overflow: 'hidden',
-        marginBottom: 30,
-    },
-    progressFill: {
+      },
+      progressFill: {
         height: '100%',
-        borderRadius: 5,
         backgroundColor: '#4CAF50',
-    },
+      },
     title: {
         fontSize: 28,
         fontWeight: 'bold',
@@ -102,6 +160,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         marginTop: 10,
+        marginBottom: 20,
     },
     buttonText: {
         color: '#fff',
@@ -113,6 +172,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+
+    loginHighlight: {
+        color: "#007AFF",
+      },
+    
+      loginText: {
+        marginTop: 20,
+        textAlign: "center",
+        color: "#333",
+      },
 });
 
 export default DNIScreen;

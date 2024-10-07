@@ -33,8 +33,12 @@ const InitialScreen = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialButton}>
-          <View style={styles.iconCircle}>
-            <FontAwesome name="google" size={24} color="#db4a39" />
+          <View style={styles.googleIconCircle}>
+            <View style={styles.colorQuadrant1} />
+            <View style={styles.colorQuadrant2} />
+            <View style={styles.colorQuadrant3} />
+            <View style={styles.colorQuadrant4} />
+            <FontAwesome name="google" size={24} color="white" style={styles.googleIcon} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialButton}>
@@ -104,6 +108,50 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  googleIconCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  colorQuadrant1: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 25,
+    height: 25,
+    backgroundColor: '#4285F4', // Google Blue
+  },
+  colorQuadrant2: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 25,
+    height: 25,
+    backgroundColor: '#DB4437', // Google Red
+  },
+  colorQuadrant3: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 25,
+    height: 25,
+    backgroundColor: '#F4B400', // Google Yellow
+  },
+  colorQuadrant4: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 25,
+    height: 25,
+    backgroundColor: '#0F9D58', // Google Green
+  },
+  googleIcon: {
+    position: 'absolute',
+    top: 13,
+    left: 13,
   },
 });
 
