@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import InitialScreen from "./screens/Screens-Login/InitialScreen";
@@ -40,6 +40,9 @@ import AllCategoriesScreen from "./screens/Screens-Categorias/AllCategoriesScree
 import AllProfilesScreen from "./screens/Screens-Profile/AllProfilesScreen";
 import EditProfileScreen from "./screens/Screens-Profile-Picker/EditProfileScreen";
 import MatchScreen from "./screens/Screens-Match/MatchScreen";
+import ChatScreen from "./screens/Screens-Chat/ChatScreen";
+import PrivateChatScreen from "./screens/Screens-Chat/PrivateChatScreen";
+
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -63,7 +66,24 @@ function MyTabs() {
         component={ChatScreen}
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons name="chatbubble-ellipses-outline" size={24} color={color} />
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="PrivateChatScreen"
+        component={PrivateChatScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
@@ -157,10 +177,7 @@ export default function App() {
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="ProfileScreen"
-          component={ProfileScreen}
-        />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen
           name="CreateProfessionalAccountScreen"
           component={CreateProfessionalAccountScreen}
@@ -171,7 +188,7 @@ export default function App() {
           component={DataEntryScreen}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="CompanyNameEntryScreen"
           component={CompanyNameEntryScreen}
           options={{ headerShown: false }}
@@ -256,12 +273,12 @@ export default function App() {
           component={ProfilePreviewPursuerScreen}
           options={{ headerShown: false }}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="CategoryDetailScreen"
           component={CategoryDetailScreen}
           options={{ headerShown: false }}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="AllCategoriesScreen"
           component={AllCategoriesScreen}
           options={{ headerShown: false }}
@@ -286,6 +303,17 @@ export default function App() {
           component={MatchScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PrivateChatScreen"
+          component={PrivateChatScreen}
+          options={{ headerShown: false }}
+        />
+
         <Stack.Screen
           name="MainTabs"
           component={MyTabs}

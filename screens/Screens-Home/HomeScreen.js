@@ -195,7 +195,7 @@ const HomeScreen = () => {
             <Ionicons name="home-outline" size={24} color="black" />
             <Text style={styles.tabText}>Home</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('ChatsScreen')}>
+          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('ChatScreen')}>
             <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
             <Text style={styles.tabText}>Chats</Text>
           </TouchableOpacity>
@@ -371,4 +371,4 @@ const HomeScreen = () => {
     },
   });
   
-  export default HomeScreen;
+    export default HomeScreen;
