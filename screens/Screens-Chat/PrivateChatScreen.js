@@ -62,8 +62,7 @@ function PrivateChatScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Image
-          source={{ uri: 'https://example.com/profile-pic.jpg' }}
+        <Image source={require('./../../assets/profile16.png')}
           style={styles.profilePic}
         />
         <View style={styles.headerInfo}>
