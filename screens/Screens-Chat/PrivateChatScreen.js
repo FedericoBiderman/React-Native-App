@@ -1,20 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, Animated } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function PrivateChatScreen() {
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
-
   const [messages, setMessages] = useState([
     { id: "1", text: "Hola, ¿cómo estás?", sender: "other", time: "8:30pm" },
     { id: "2", text: "Todo bien, ¿y tú?", sender: "me", time: "8:33pm" },
     { id: "3", text: "Igual, gracias.", sender: "other", time: "8:36pm" },
     { id: "4", text: "Qué bueno, ¿has hecho algo interesante hoy?", sender: "me", time: "8:38pm" },
   ]);
-
   const [newMessage, setNewMessage] = useState("");
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const bookmarkAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     scrollToBottom();
@@ -37,14 +38,20 @@ function PrivateChatScreen() {
     }
   };
 
+  const toggleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    Animated.timing(bookmarkAnimation, {
+      toValue: isBookmarked ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const renderItem = ({ item }) => {
     const isMyMessage = item.sender === "me";
     return (
       <View
-        style={[
-          styles.messageContainer,
-          isMyMessage ? styles.myMessage : styles.otherMessage,
-        ]}
+        style={[styles.messageContainer, isMyMessage ? styles.myMessage : styles.otherMessage]}
       >
         <Text style={[styles.messageText, isMyMessage ? styles.myMessageText : styles.otherMessageText]}>
           {item.text}
@@ -57,14 +64,12 @@ function PrivateChatScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Image source={require('./../../assets/profile16.png')}
-          style={styles.profilePic}
-        />
+        <Image source={require('./../../assets/profile16.png')} style={styles.profilePic} />
         <View style={styles.headerInfo}>
           <Text style={styles.headerName}>Anil</Text>
           <Text style={styles.headerStatus}>Online - Last seen 7:02pm</Text>
@@ -76,6 +81,15 @@ function PrivateChatScreen() {
           <Ionicons name="ellipsis-vertical" size={24} color="#000" />
         </TouchableOpacity>
       </View>
+
+      {isBookmarked && (
+        <Animated.View style={[styles.bookmarkBanner, { opacity: bookmarkAnimation }]}>
+          <Text style={styles.bookmarkBannerText}>Saved chat to your bookmarks list</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("BookmarksScreen")}>
+            <Text style={styles.viewText}>View</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -91,8 +105,8 @@ function PrivateChatScreen() {
         </ScrollView>
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.attachButton}>
-            <Ionicons name="attach" size={24} color="#757575" />
+          <TouchableOpacity style={styles.emojiButton}>
+            <Ionicons name="happy-outline" size={24} color="#757575" />
           </TouchableOpacity>
           <View style={styles.textInputWrapper}>
             <TextInput
@@ -101,12 +115,16 @@ function PrivateChatScreen() {
               value={newMessage}
               onChangeText={setNewMessage}
             />
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+              <Ionicons name="send" size={20} color="black" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Ionicons name="send" size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.bookmarkButton}>
-            <Ionicons name="bookmark-outline" size={24} color="#757575" />
+          <TouchableOpacity style={styles.bookmarkButton} onPress={toggleBookmark}>
+            <Ionicons 
+              name={isBookmarked ? "bookmark" : "bookmark-outline"} 
+              size={28} 
+              color={isBookmarked ? "#4285F4" : "#757575"} 
+            />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -198,7 +216,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#E0E0E0',
   },
-  attachButton: {
+  emojiButton: {
     padding: 5,
   },
   textInputWrapper: {
@@ -215,12 +233,28 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   sendButton: {
-    backgroundColor: '#00E676',
-    padding: 10,
+    padding: 8,
     borderRadius: 50,
   },
   bookmarkButton: {
     padding: 5,
+  },
+  bookmarkBanner: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#E8F0FE',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 10,
+    marginTop: 10,
+  },
+  bookmarkBannerText: {
+    color: '#185ABC',
+  },
+  viewText: {
+    color: '#1A73E8',
+    fontWeight: 'bold',
   },
 });
 
