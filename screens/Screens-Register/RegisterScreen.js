@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animated, Dimensions, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animated, Dimensions, StatusBar, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
@@ -10,9 +11,15 @@ const RegisterScreen = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
+  const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
+    username: ''
+  });
   const [animation] = useState(new Animated.Value(0));
   const [progressAnimation] = useState(new Animated.Value(0));
   const navigation = useNavigation();
+  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
 
   useEffect(() => {
     Animated.parallel([
@@ -29,8 +36,95 @@ const RegisterScreen = () => {
     ]).start();
   }, []);
 
+  const validateName = (name, field) => {
+    const nameRegex = /^[A-Z][a-zA-Z]*$/;
+    if (!name) {
+      setErrors(prev => ({ ...prev, [field]: 'Este campo es requerido' }));
+      return false;
+    }
+    if (!nameRegex.test(name)) {
+      setErrors(prev => ({ ...prev, [field]: 'Debe comenzar con mayúscula y contener solo letras' }));
+      return false;
+    }
+    setErrors(prev => ({ ...prev, [field]: '' }));
+    return true;
+  };
+
+  const validateUsername = (username) => {
+    // Nueva expresión regular que permite letras y números
+    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]*$/;
+
+    if (!username) {
+      setErrors(prev => ({ ...prev, username: 'El nombre de usuario es requerido' }));
+      return false;
+    }
+    if (!usernameRegex.test(username)) {
+      setErrors(prev => ({ ...prev, username: 'Debe comenzar con una letra y solo puede contener letras y números' }));
+      return false;
+    }
+    setErrors(prev => ({ ...prev, username: '' }));
+    return true;
+  };
+
+  const handleRegister = async () => {
+    const isFirstNameValid = validateName(firstName, 'firstName');
+    const isLastNameValid = validateName(lastName, 'lastName');
+    const isUsernameValid = validateUsername(username);
+
+    if (!isFirstNameValid || !isLastNameValid || !isUsernameValid) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${baseUrl}/api/user/register`, {
+        Name: firstName,
+        Surname: lastName,
+        username: username
+      });
+
+      if (response.data.success) {
+        Alert.alert(
+          'Muy bien',
+          'sigue creando tu cuenta.',
+          [
+            { 
+              text: 'OK', 
+              onPress: () => handleContinue()
+            }
+          ]
+        );
+      }
+    } catch (error) {
+      let errorMessage = 'Hubo un problema al intentar registrarte.';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      Alert.alert('Error', errorMessage);
+    }
+  };
+
   const handleContinue = () => {
-    navigation.navigate('BirthdayPhoneScreen', { firstName, lastName, username });
+    const isFirstNameValid = validateName(firstName, 'firstName');
+    const isLastNameValid = validateName(lastName, 'lastName');
+    const isUsernameValid = validateUsername(username);
+
+    if (isFirstNameValid && isLastNameValid && isUsernameValid) {
+      navigation.navigate('BirthdayPhoneScreen', { firstName, lastName, username });
+    }
+  };
+
+  const handleInputChange = (text, setter, field) => {
+    if (field === 'username') {
+      // Permite letras y números para el username
+      const alphanumericOnly = text.replace(/[^a-zA-Z0-9]/g, '');
+      setter(alphanumericOnly);
+      validateUsername(alphanumericOnly);
+    } else {
+      // Mantiene solo letras para firstName y lastName
+      const lettersOnly = text.replace(/[^a-zA-Z]/g, '');
+      setter(lettersOnly);
+      validateName(lettersOnly, field);
+    }
   };
 
   const translateY = animation.interpolate({
@@ -68,31 +162,50 @@ const RegisterScreen = () => {
       <ScrollView>
         <Animated.View style={[styles.formContainer, { opacity, transform: [{ translateY }] }]}>
           <Text style={styles.title}>Create your account</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="What's your first name?"
-            value={firstName}
-            onChangeText={setFirstName}
-            placeholderTextColor="#999"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="What's your last name?"
-            value={lastName}
-            onChangeText={setLastName}
-            placeholderTextColor="#999"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Create a username or enter your company name"
-            value={username}
-            onChangeText={setUsername}
-            placeholderTextColor="#999"
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, errors.firstName ? styles.inputError : null]}
+              placeholder="What's your first name?"
+              value={firstName}
+              onChangeText={(text) => handleInputChange(text, setFirstName, 'firstName')}
+              placeholderTextColor="#999"
+            />
+            {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, errors.lastName ? styles.inputError : null]}
+              placeholder="What's your last name?"
+              value={lastName}
+              onChangeText={(text) => handleInputChange(text, setLastName, 'lastName')}
+              placeholderTextColor="#999"
+            />
+            {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, errors.username ? styles.inputError : null]}
+              placeholder="Create a username or enter your company name"
+              value={username}
+              onChangeText={(text) => handleInputChange(text, setUsername, 'username')}
+              placeholderTextColor="#999"
+            />
+            {errors.username ? <Text style={styles.errorText}>{errors.username}</Text> : null}
+          </View>
+
           <Text style={styles.infoText}>
             Let's start by entering our personal information such as first, last name and username. Your username is unique, and if you regret it you can change it.
           </Text>
-          <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+          <TouchableOpacity 
+            style={[
+              styles.continueButton,
+              (!firstName || !lastName || !username) && styles.continueButtonDisabled
+            ]} 
+            onPress={handleRegister}
+            disabled={!firstName || !lastName || !username}
+          >
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
           
@@ -147,14 +260,24 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
+  inputContainer: {
+    marginBottom: 20,
+  },
   input: {
     height: 50,
     borderColor: '#e0e0e0',
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    marginBottom: 20,
     backgroundColor: '#fff',
+  },
+  inputError: {
+    borderColor: '#ff0000',
+  },
+  errorText: {
+    color: '#ff0000',
+    fontSize: 12,
+    marginTop: 5,
   },
   infoText: {
     marginBottom: 20,
@@ -167,6 +290,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: 16,
+  },
+  continueButtonDisabled: {
+    backgroundColor: '#cccccc',
   },
   buttonText: {
     color: '#fff',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animated, Dimensions, StatusBar, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animated, Dimensions, StatusBar, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
@@ -10,39 +10,38 @@ import axios from 'axios';
 const { width } = Dimensions.get('window');
 
 const BirthdayPhoneScreen = ({ route }) => {
-  const [birthday, setBirthday] = useState(new Date(2009, 0, 1)); // Fecha por defecto
+  const [birthday, setBirthday] = useState(new Date(2009, 0, 1));
   const [phoneNumber, setPhoneNumber] = useState("");
   const [animation] = useState(new Animated.Value(0));
   const [progressAnimation] = useState(new Animated.Value(0));
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [countryCode, setCountryCode] = useState("+1"); // Código de país por defecto
-  const [countries, setCountries] = useState([]); // Lista de países vacía inicialmente
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [countryCode, setCountryCode] = useState("+1");
+  const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Función para obtener países desde el backend
     const fetchCountries = async () => {
       try {
-        setLoading(true); // Mostrar spinner de carga
-        const response = await axios.get(`${baseUrl}/api/country`); // URL de tu backend
+        setLoading(true);
+        const response = await axios.get(`${baseUrl}/api/country`);
         const countryData = response.data.map((country) => ({
           label: `${country.Name} (${country.alpha_2})`,
           value: country.alpha_2,
-          flag: country.alpha_2 // Adaptar esto si tienes un campo "flag"
+          flag: country.alpha_2,
         }));
-        setCountries(countryData); // Actualiza el estado con los países
-        setCountryCode(countryData[0]?.value || "+1"); // Establece el primer país como predeterminado
+        setCountries(countryData);
+        setCountryCode(countryData[0]?.value || "+1");
       } catch (error) {
         console.error('Error fetching countries:', error);
       } finally {
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       }
     };
 
     fetchCountries();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     Animated.parallel([
@@ -59,15 +58,31 @@ const BirthdayPhoneScreen = ({ route }) => {
     ]).start();
   }, []);
 
+  const handlePhoneNumberChange = (text) => {
+    const cleaned = text.replace(/[^0-9]/g, "").slice(0, 12); // Permite hasta 12 dígitos
+    let formatted = cleaned;
+  
+    if (cleaned.length > 3 && cleaned.length <= 7) {
+      formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
+    } else if (cleaned.length > 7) {
+      formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+    }
+    setPhoneNumber(formatted);
+  };
+
   const handleContinue = () => {
+    if (phoneNumber.length < 13) {
+      Alert.alert("Error", "El número de teléfono debe tener 12 dígitos.");
+      return;
+    }
+
     const data = {
       birthday: birthday.toISOString().split("T")[0],
       phoneNumber: phoneNumber,
       countryCode: countryCode,
     };
-    console.log(data); // Puedes enviar los datos al servidor o manejarlos como necesites
+    console.log(data);
 
-    // Navegar a la siguiente pantalla
     navigation.navigate("GenderScreen", { ...route.params, ...data });
   };
 
@@ -131,10 +146,11 @@ const BirthdayPhoneScreen = ({ route }) => {
 
           <TextInput
             style={styles.input}
-            placeholder="Número de Teléfono"
+            placeholder="Número de Teléfono - 123-4567-8901"
             keyboardType="phone-pad"
             value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            onChangeText={handlePhoneNumberChange}
+            maxLength={13}
           />
 
           <Text>Seleccione el código de país</Text>

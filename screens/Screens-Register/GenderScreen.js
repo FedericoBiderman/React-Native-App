@@ -4,24 +4,27 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
-const genders = [
-  { label: "Masculino", value: "masculino" },
-  { label: "Femenino", value: "femenino" },
-  { label: "Otro", value: "otro" },
-  { label: "Prefiero no decirlo", value: "prefiero no decirlo" },
-];
-
 const GenderScreen = ({ route }) => {
-  const [gender, setGender] = useState('');
+  const [genderList, setGenderList] = useState([]);
+  const [genderId, setGenderId] = useState(null);
+  const [genderLabel, setGenderLabel] = useState('');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const navigation = useNavigation();
   const [animation] = useState(new Animated.Value(0));
   const [progressAnimation] = useState(new Animated.Value(0));
+  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
 
   useEffect(() => {
+    // Fetch genders from API
+    axios.get(`${baseUrl}/api/user/gender`)
+      .then(response => setGenderList(response.data))
+      .catch(error => console.error('Error fetching genders:', error));
+    
+    // Run animations
     Animated.parallel([
       Animated.timing(animation, {
         toValue: 1,
@@ -36,13 +39,14 @@ const GenderScreen = ({ route }) => {
     ]).start();
   }, []);
 
-  const handleGenderSelect = (value) => {
-    setGender(value);
+  const handleGenderSelect = (id, label) => {
+    setGenderId(id);  // Save the selected gender ID
+    setGenderLabel(label);  // Display the selected gender label
     setIsDropdownVisible(false);
   };
 
   const handleContinue = () => {
-    navigation.navigate('EmailPasswordScreen', { ...route.params, gender });
+    navigation.navigate('EmailPasswordScreen', { ...route.params, genderId });
   };
 
   const translateY = animation.interpolate({
@@ -83,20 +87,20 @@ const GenderScreen = ({ route }) => {
           style={styles.genderButton}
           onPress={() => setIsDropdownVisible(!isDropdownVisible)}
         >
-          <Text style={gender ? styles.selectedText : styles.placeholderText}>
-            {gender || "Selecciona tu género"}
+          <Text style={genderLabel ? styles.selectedText : styles.placeholderText}>
+            {genderLabel || "Selecciona tu género"}
           </Text>
         </TouchableOpacity>
 
         {isDropdownVisible && (
           <View style={styles.dropdown}>
             <FlatList
-              data={genders}
-              keyExtractor={(item) => item.value}
+              data={genderList}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.dropdownItem}
-                  onPress={() => handleGenderSelect(item.value)}
+                  onPress={() => handleGenderSelect(item.id, item.label)}
                 >
                   <Text style={styles.dropdownItemText}>{item.label}</Text>
                 </TouchableOpacity>
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   dropdown: {
-    backgroundColor: '#0089FF',
+    backgroundColor: '#E0E0E0',
     borderRadius: 12,
     marginBottom: 16,
     maxHeight: 200,
@@ -197,10 +201,10 @@ const styles = StyleSheet.create({
   dropdownItem: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#fff',
+    borderBottomColor: '#0089FF',
   },
   dropdownItemText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
   },
   infoText: {
