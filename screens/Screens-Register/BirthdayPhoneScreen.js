@@ -18,7 +18,7 @@ const BirthdayPhoneScreen = ({ route }) => {
   const [countryCode, setCountryCode] = useState("+1");
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
+  const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
   const navigation = useNavigation();
 
   useEffect(() => {

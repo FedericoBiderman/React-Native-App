@@ -1,21 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animated, Dimensions, StatusBar, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Animated,
+    Dimensions,
+    StatusBar,
+    Alert,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import axios from "axios";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const EmailPasswordScreen = ({ route }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [repeatPassword, setRepeatPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [repeatPassword, setRepeatPassword] = useState("");
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [animation] = useState(new Animated.Value(0));
     const [progressAnimation] = useState(new Animated.Value(0));
     const navigation = useNavigation();
-    const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
+    const baseUrl = "https://welcome-chamois-aware.ngrok-free.app";
 
     useEffect(() => {
         Animated.parallel([
@@ -28,7 +39,7 @@ const EmailPasswordScreen = ({ route }) => {
                 toValue: 1,
                 duration: 1000,
                 useNativeDriver: false,
-            })
+            }),
         ]).start();
     }, []);
 
@@ -44,7 +55,7 @@ const EmailPasswordScreen = ({ route }) => {
 
     const handleContinue = async () => {
         if (!isValidPassword() || !isMatch()) {
-            Alert.alert('Error', 'Please meet all password requirements.');
+            Alert.alert("Error", "Please meet all password requirements.");
             return;
         }
         try {
@@ -53,15 +64,27 @@ const EmailPasswordScreen = ({ route }) => {
                 password,
             });
             if (response.data.success) {
-                Alert.alert('Registro Exitoso', 'Tu cuenta ha sido creada correctamente.', [
-                    { text: 'OK', onPress: () => navigation.navigate('DNIScreen', { ...route.params, email, password }) },
-                ]);
+                Alert.alert(
+                    "Registro Exitoso",
+                    "Tu cuenta ha sido creada correctamente.",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () =>
+                                navigation.navigate("DNIScreen", {
+                                    ...route.params,
+                                    email,
+                                    password,
+                                }),
+                        },
+                    ]
+                );
             } else {
-                Alert.alert('Error', 'Hubo un problema al crear la cuenta.');
+                Alert.alert("Error", "Hubo un problema al crear la cuenta.");
             }
         } catch (error) {
             console.error(error);
-            Alert.alert('Error', 'Ocurrió un problema al intentar registrarte.');
+            Alert.alert("Error", "Ocurrió un problema al intentar registrarte.");
         }
     };
 
@@ -76,7 +99,7 @@ const EmailPasswordScreen = ({ route }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('DNIScreen')}>
+                <TouchableOpacity onPress={() => navigation.navigate("DNIScreen")}>
                     <Text style={styles.skipText}>Omitir</Text>
                 </TouchableOpacity>
             </View>
@@ -91,26 +114,74 @@ const EmailPasswordScreen = ({ route }) => {
                         keyboardType="email-address"
                         placeholderTextColor="#999"
                     />
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Create a password"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={secureTextEntry}
-                            placeholderTextColor="#999"
+ <View style={styles.inputContainer}>
+                <Text style={styles.label}>Password</Text>
+                <View style={styles.inputWrapper}>
+                    <TextInput
+                        style={styles.passwordInput}
+                        placeholder="Create a password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={secureTextEntry}
+                        placeholderTextColor="#999"
+                    />
+                    <TouchableOpacity
+                        onPress={togglePasswordVisibility}
+                        style={styles.eyeIcon}
+                    >
+                        <Ionicons
+                            name={secureTextEntry ? "eye-off" : "eye"}
+                            size={24}
+                            color="grey"
                         />
-                        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
-                            <Ionicons name={secureTextEntry ? 'eye-off' : 'eye'} size={24} color="gray" />
-                        </TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
+            </View>
+                    <View style={styles.passwordRequirementsBox}>
+                        <Text style={styles.requirementsTitle}>Password Requirements</Text>
+                        <View style={styles.validationContainer}>
+                            <Text
+                                style={[
+                                    styles.validationText,
+                                    { color: isValidPassword() ? "green" : "red" },
+                                ]}
+                            >
+                                At least 8 characters.
+                            </Text>
+                            <Text
+                                style={[
+                                    styles.validationText,
+                                    { color: /[0-9]/.test(password) ? "green" : "red" },
+                                ]}
+                            >
+                                At least one number.
+                            </Text>
+                            <Text
+                                style={[
+                                    styles.validationText,
+                                    { color: /[A-Z]/.test(password) ? "green" : "red" },
+                                ]}
+                            >
+                                At least one uppercase letter.
+                            </Text>
+                            <Text
+                                style={[
+                                    styles.validationText,
+                                    {
+                                        color: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+                                            ? "green"
+                                            : "red",
+                                    },
+                                ]}
+                            >
+                                At least one special character.
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.validationContainer}>
-                        <Text style={[styles.validationText, { color: isValidPassword() ? 'green' : 'red' }]}>At least 8 characters.</Text>
-                        <Text style={[styles.validationText, { color: /[0-9]/.test(password) ? 'green' : 'red' }]}>At least one number.</Text>
-                        <Text style={[styles.validationText, { color: /[A-Z]/.test(password) ? 'green' : 'red' }]}>At least one uppercase letter.</Text>
-                        <Text style={[styles.validationText, { color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'green' : 'red' }]}>At least one special character.</Text>
-                    </View>
-                    <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+                    <TouchableOpacity
+                        style={styles.continueButton}
+                        onPress={handleContinue}
+                    >
                         <Text style={styles.buttonText}>Continue</Text>
                     </TouchableOpacity>
                 </View>
@@ -122,63 +193,63 @@ const EmailPasswordScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
     },
     header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         padding: 16,
     },
     skipText: {
         fontSize: 16,
-        color: 'black',
+        color: "black",
     },
     progressBarContainer: {
-        alignItems: 'center',
+        alignItems: "center",
         marginBottom: 20,
     },
     progressBar: {
         height: 8,
-        backgroundColor: '#e0e0e0',
+        backgroundColor: "#e0e0e0",
         width: width * 0.7,
         borderRadius: 4,
-        overflow: 'hidden',
+        overflow: "hidden",
     },
     progressFill: {
-        height: '100%',
-        backgroundColor: '#4CAF50',
+        height: "100%",
+        backgroundColor: "#4CAF50",
     },
     formContainer: {
         padding: 24,
     },
     title: {
         fontSize: 32,
-        fontWeight: 'bold',
-        color: 'black',
+        fontWeight: "bold",
+        color: "black",
         marginBottom: 24,
-        textAlign: 'center',
+        textAlign: "center",
     },
     input: {
         height: 50,
-        borderColor: '#e0e0e0',
+        borderColor: "#e0e0e0",
         borderWidth: 1,
         borderRadius: 10,
         paddingHorizontal: 10,
         marginBottom: 20,
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
     },
     continueButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: "#007AFF",
         paddingVertical: 15,
         borderRadius: 10,
-        alignItems: 'center',
+        alignItems: "center",
         marginBottom: 20,
     },
     buttonText: {
-        color: '#fff',
+        color: "#fff",
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
     loginHighlight: {
         color: "#007AFF",
@@ -192,6 +263,56 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: "#666",
         textAlign: "center",
+    }, 
+    passwordRequirementsBox: {
+        backgroundColor: '#f5f5f5',
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+    },
+    requirementsTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 10,
+    },
+    validationContainer: {
+        marginTop: 5,
+    },
+    validationText: {
+        fontSize: 14,
+        marginBottom: 5,
+    },
+    inputContainer: {
+        marginBottom: 20,
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 5,
+        color: "black",
+    },
+    inputWrapper: {
+        height: 50,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#e0e0e0',
+        borderWidth: 1,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 2,
+    },
+    passwordInput: {
+        flex: 1,
+        height: 50,
+        paddingHorizontal: 15,
+    },
+    eyeIcon: {
+        padding: 10,
     },
 });
 

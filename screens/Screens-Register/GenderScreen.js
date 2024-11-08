@@ -16,11 +16,11 @@ const GenderScreen = ({ route }) => {
   const navigation = useNavigation();
   const [animation] = useState(new Animated.Value(0));
   const [progressAnimation] = useState(new Animated.Value(0));
-  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
+  const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
 
   useEffect(() => {
     // Fetch genders from API
-    axios.get(`${baseUrl}/api/user/gender`)
+    axios.get(`${baseUrl}/api/gender`)
       .then(response => setGenderList(response.data))
       .catch(error => console.error('Error fetching genders:', error));
     

@@ -10,7 +10,7 @@ export default function LoginScreen() {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [rememberMe, setRememberMe] = useState(false); // Estado para el checkbox
   const navigation = useNavigation();
-  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
+  const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
 
   const handleLogin = async () => {
     try {

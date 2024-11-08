@@ -19,7 +19,7 @@ const RegisterScreen = () => {
   const [animation] = useState(new Animated.Value(0));
   const [progressAnimation] = useState(new Animated.Value(0));
   const navigation = useNavigation();
-  const baseUrl = 'https://properly-definite-mastodon.ngrok-free.app';
+  const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
 
   useEffect(() => {
     Animated.parallel([
@@ -36,13 +36,13 @@ const RegisterScreen = () => {
     ]).start();
   }, []);
 
-  const validateName = (name, field) => {
+  const validateName = (firstName, lastName, field) => {
     const nameRegex = /^[A-Z][a-zA-Z]*$/;
-    if (!name) {
+    if (!firstName) {
       setErrors(prev => ({ ...prev, [field]: 'Este campo es requerido' }));
       return false;
     }
-    if (!nameRegex.test(name)) {
+    if (!nameRegex.test(lastName)) {
       setErrors(prev => ({ ...prev, [field]: 'Debe comenzar con mayúscula y contener solo letras' }));
       return false;
     }
@@ -51,15 +51,15 @@ const RegisterScreen = () => {
   };
 
   const validateUsername = (username) => {
-    // Nueva expresión regular que permite letras y números
-    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]*$/;
-
+    // Nueva expresión regular que permite letras, números y caracteres especiales
+    const usernameRegex = /^[a-zA-Z@][a-zA-Z0-9@._,-]*$/;
+  
     if (!username) {
       setErrors(prev => ({ ...prev, username: 'El nombre de usuario es requerido' }));
       return false;
     }
     if (!usernameRegex.test(username)) {
-      setErrors(prev => ({ ...prev, username: 'Debe comenzar con una letra y solo puede contener letras y números' }));
+      setErrors(prev => ({ ...prev, username: 'Debe comenzar con una letra o @ y puede contener letras, números y caracteres especiales' }));
       return false;
     }
     setErrors(prev => ({ ...prev, username: '' }));
@@ -115,10 +115,10 @@ const RegisterScreen = () => {
 
   const handleInputChange = (text, setter, field) => {
     if (field === 'username') {
-      // Permite letras y números para el username
-      const alphanumericOnly = text.replace(/[^a-zA-Z0-9]/g, '');
-      setter(alphanumericOnly);
-      validateUsername(alphanumericOnly);
+      // Permite letras, números y caracteres especiales para el username
+      const validChars = text.replace(/[^a-zA-Z0-9@._,-]/g, '');
+      setter(validChars);
+      validateUsername(validChars);
     } else {
       // Mantiene solo letras para firstName y lastName
       const lettersOnly = text.replace(/[^a-zA-Z]/g, '');
