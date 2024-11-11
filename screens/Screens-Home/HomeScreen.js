@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
 const [categories, setCategories] = useState([]);
-
+const [categoryRequired , setMatchxCategory] = useState ([]);
 useEffect(() => {
   const fetchCategories = async () => {
       try {
@@ -20,6 +20,26 @@ useEffect(() => {
 
   fetchCategories();
 }, []);
+
+useEffect(() => {
+  const matchxCategory = async () => {
+    try {
+      const matchesResponse = await axios.get(`${baseUrl}/api/pursuerM/${categoryRequired}`);
+            const filteredData = matchesResponse.data.map(item => ({
+        Id: item.Id,
+        Name: item.Name
+      }));
+
+      setMatchxCategory(filteredData);
+    } catch (error) {
+      console.error('Error finding matches x categories:', error);
+    }
+  };
+
+  matchxCategory();
+}, [categoryRequired]);
+
+console.log(filteredData);
 
 const profileSections = [
     {
