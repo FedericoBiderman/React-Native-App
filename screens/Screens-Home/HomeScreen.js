@@ -6,42 +6,51 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 
 const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
-const [categories, setCategories] = useState([]);
-const [categoryRequired , setMatchxCategory] = useState ([]);
-useEffect(() => {
-  const fetchCategories = async () => {
+
+const HomeScreen = () => {
+  const navigation = useNavigation();
+
+  // Hooks dentro del componente funcional
+  const [categories, setCategories] = useState([]);
+  const [categoryRequired, setCategoryRequired] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+  // Efecto para obtener las categorías
+  useEffect(() => {
+    const fetchCategories = async () => {
       try {
-          const response = await axios.get(`${baseUrl}/api/category`);
-          setCategories(response.data);
+        const response = await axios.get(`${baseUrl}/api/category`);
+        setCategories(response.data);
       } catch (error) {
-          console.error('Error fetching categories:', error);
+        console.error('Error fetching categories:', error);
       }
-  };
+    };
 
-  fetchCategories();
-}, []);
+    fetchCategories();
+  }, []);
 
-useEffect(() => {
-  const matchxCategory = async () => {
-    try {
-      const matchesResponse = await axios.get(`${baseUrl}/api/pursuerM/${categoryRequired}`);
-            const filteredData = matchesResponse.data.map(item => ({
-        Id: item.Id,
-        Name: item.Name
-      }));
+  // Efecto para obtener datos filtrados basado en la categoría seleccionada
+  useEffect(() => {
+    if (categoryRequired) {
+      const fetchFilteredData = async () => {
+        try {
+          const matchesResponse = await axios.get(`${baseUrl}/api/pursuerM/${categoryRequired}`);
+          const filteredData = matchesResponse.data.map(item => ({
+            Id: item.Id,
+            Name: item.Name,
+          }));
+          setFilteredData(filteredData);
+        } catch (error) {
+          console.error('Error finding matches by category:', error);
+        }
+      };
 
-      setMatchxCategory(filteredData);
-    } catch (error) {
-      console.error('Error finding matches x categories:', error);
+      fetchFilteredData();
     }
-  };
+  }, [categoryRequired]);
 
-  matchxCategory();
-}, [categoryRequired]);
-
-console.log(filteredData);
-
-const profileSections = [
+  // Definición de `profileSections`
+  const profileSections = [
     {
         title: "Nuevos talentos que se suman", 
         profiles: [
@@ -97,129 +106,78 @@ const profileSections = [
         ]
     }
 ];
+  // Función para renderizar las secciones de perfiles
+  const renderProfileSection = (section) => (
+    <View key={section.title}>
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{section.title}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('AllProfilesScreen', { title: section.title, profiles: section.profiles })}>
+          <Text style={styles.seeMoreText}>Ver más</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.profilesContainer}>
+        {section.profiles.map((profile) => (
+          <TouchableOpacity
+            key={profile.id}
+            onPress={() => navigation.navigate('MatchScreen', { profile })}
+            style={styles.profileCard}
+          >
+            <ImageBackground source={profile.image} style={styles.profileHeader}>
+              <View style={styles.profileRating}>
+                <Text style={styles.ratingText}>⭐ {profile.rating}</Text>
+              </View>
+              {section.title === 'Nuevos talentos que se suman' && (
+                <View style={styles.newTag}>
+                  <Text style={styles.newTagText}>NUEVO</Text>
+                </View>
+              )}
+            </ImageBackground>
+            <View style={styles.profileContent}>
+              <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen', { profile })}>
+                <Image source={profile.image} style={styles.profileImage} />
+              </TouchableOpacity>
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName}>{profile.name}, {profile.age}</Text>
+                <Text style={styles.profileCountry}>{profile.country}</Text>
+                <Text style={styles.profileCategory}>{profile.category}</Text>
+                <Text style={styles.profileDistance}>📍 {profile.distance} KM</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  );
 
-const HomeScreen = () => {
-    const navigation = useNavigation();
-  
-    const renderProfileSection = (section) => (
-      <View key={section.title}>
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Categorías */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{section.title}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('AllProfilesScreen', { title: section.title, profiles: section.profiles })}>
+          <Text style={styles.sectionTitle}>Categorías</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('AllCategoriesScreen', { categories })}>
             <Text style={styles.seeMoreText}>Ver más</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.profilesContainer}>
-          {section.profiles.map((profile) => (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
+          {categories.map((category) => (
             <TouchableOpacity
-              key={profile.id}
-              // Navegación al MatchScreen cuando se presiona el rectángulo grande
-              onPress={() => navigation.navigate('MatchScreen', { profile })}
-              style={styles.profileCard}
+              key={category.id}
+              style={styles.categoryItem}
+              onPress={() => setCategoryRequired(category.id)}
             >
-              <ImageBackground source={profile.image} style={styles.profileHeader}>
-                <View style={styles.profileRating}>
-                  <Text style={styles.ratingText}>⭐ {profile.rating}</Text>
-                </View>
-                {section.title === 'Nuevos talentos que se suman' && (
-                  <View style={styles.newTag}>
-                    <Text style={styles.newTagText}>NUEVO</Text>
-                  </View>
-                )}
-              </ImageBackground>
-              <View style={styles.profileContent}>
-                <TouchableOpacity
-                  // Navegación al ProfileScreen cuando se presiona la imagen pequeña
-                  onPress={() => navigation.navigate('ProfileScreen', { profile })}
-                >
-                  <Image source={profile.image} style={styles.profileImage} />
-                </TouchableOpacity>
-                <View style={styles.profileInfo}>
-                  <Text style={styles.profileName}>{profile.name}, {profile.age}</Text>
-                  <Text style={styles.profileCountry}>{profile.country}</Text>
-                  <Text style={styles.profileCategory}>{profile.category}</Text>
-                  <Text style={styles.profileDistance}>📍 {profile.distance} KM</Text>
-                </View>
-              </View>
+              <Image source={category.image} style={styles.categoryImage} />
+              <Text style={styles.categoryName}>{category.name}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
-    );
-  
-    return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.navigate('PickerProfileScreen')}>
-              <View style={styles.userInfo}>
-                <Text style={styles.headerText}>Hola, IBM</Text>
-                <Ionicons name="chevron-forward" size={24} color="black"/>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.headerIcons}>
-              <TouchableOpacity onPress={() => navigation.navigate('NotificationsScreen')} style={styles.iconButton}>
-                <Ionicons name="notifications-outline" size={24} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')} style={styles.iconButton}>
-                <Ionicons name="settings-outline" size={24} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('HelpScreen')} style={styles.iconButton}>
-                <Text style={styles.helpText}>Ayuda</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-  
-          <TouchableOpacity
-            style={styles.searchBar}
-            onPress={() => navigation.navigate('SearchScreen')}
-          >
-            <Ionicons name="search" size={20} color="gray" />
-            <Text style={styles.searchText}>¿Qué estás buscando?</Text>
-          </TouchableOpacity>
-  
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Categorías</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('AllCategoriesScreen', { categories })}>
-              <Text style={styles.seeMoreText}>Ver más</Text>
-            </TouchableOpacity>
-          </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
-            {categories.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={styles.categoryItem}
-                onPress={() => navigation.navigate('CategoryDetailScreen', { category })}
-              >
-                <Image source={category.image} style={styles.categoryImage} />
-                <Text style={styles.categoryName}>{category.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-  
-          {profileSections.map(renderProfileSection)}
-        </ScrollView>
-        <View style={styles.tabBar}>
-          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Ionicons name="home-outline" size={24} color="black" />
-            <Text style={styles.tabText}>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('ChatScreen')}>
-            <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
-            <Text style={styles.tabText}>Chats</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('SearchScreen')}>
-            <Ionicons name="search-outline" size={24} color="black" />
-            <Text style={styles.tabText}>Buscar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('PickerProfileScreen')}>
-            <Ionicons name="person-outline" size={24} color="black" />
-            <Text style={styles.tabText}>Perfil</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
-  };
+
+        {/* Secciones de perfiles */}
+        {profileSections.map(renderProfileSection)}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
   
   const styles = StyleSheet.create({
     container: {
