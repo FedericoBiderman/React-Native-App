@@ -16,7 +16,7 @@ const AllCategoriesScreen = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/category`);
-        setCategories(response.data); // Reemplaza con los datos obtenidos
+        setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -25,7 +25,7 @@ const AllCategoriesScreen = () => {
   }, []);
 
   const navigateToCategoryDetail = (category) => {
-    const screenName = `${category.name.replace(/\s+/g, '')}CategoryDetailScreen`;
+    const screenName = `${category.Name.replace(/\s+/g, '')}CategoryDetailScreen`;
     navigation.navigate(screenName, { category });
   };
 
@@ -36,10 +36,10 @@ const AllCategoriesScreen = () => {
       onPress={() => navigateToCategoryDetail(category)}
     >
       <Image
-        source={category.image ? category.image : { uri: category.imageUrl }}
+        source={{ uri: `https://welcome-chamois-aware.ngrok-free.app/assets/${category.Id}.png` }}
         style={styles.categoryIcon}
       />
-      <Text style={styles.categoryName}>{category.name}</Text>
+      <Text style={styles.categoryName}>{category.Name}</Text>
     </TouchableOpacity>
   );
 
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   categoryIcon: {
-    width: '80%',
-    height: '80%',
+    width: '100%',
+    height: '70%',
     resizeMode: 'contain',
     marginBottom: 10,
   },
