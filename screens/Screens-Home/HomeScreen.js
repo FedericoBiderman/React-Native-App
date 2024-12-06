@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  ImageBackground
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 
 const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
@@ -10,12 +18,12 @@ const baseUrl = 'https://welcome-chamois-aware.ngrok-free.app';
 const HomeScreen = () => {
   const navigation = useNavigation();
 
-  // Hooks dentro del componente funcional
+  // Estados y datos
   const [categories, setCategories] = useState([]);
-  const [categoryRequired, setCategoryRequired] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
+  const [categoryRequired, setCategoryRequired] = useState([]);
+  const [matchData, setMatchData] = useState([]);
 
-  // Efecto para obtener las categorías
+  // Obtener categorías
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -25,28 +33,26 @@ const HomeScreen = () => {
         console.error('Error fetching categories:', error);
       }
     };
-
     fetchCategories();
   }, []);
 
-  // Efecto para obtener datos filtrados basado en la categoría seleccionada
+  // Obtener coincidencias por categoría
   useEffect(() => {
-    if (categoryRequired) {
-      const fetchFilteredData = async () => {
-        try {
-          const matchesResponse = await axios.get(`${baseUrl}/api/pursuerM/${categoryRequired}`);
-          const filteredData = matchesResponse.data.map(item => ({
-            Id: item.Id,
-            Name: item.Name,
+    const fetchMatchesByCategory = async () => {
+      try {
+        if (categoryRequired) {
+          const response = await axios.get(`${baseUrl}/api/pursuerM/${categoryRequired}`);
+          const filteredData = response.data.map(item => ({
+            id: item.Id,
+            name: item.Name,
           }));
-          setFilteredData(filteredData);
-        } catch (error) {
-          console.error('Error finding matches by category:', error);
+          setMatchData(filteredData);
         }
-      };
-
-      fetchFilteredData();
-    }
+      } catch (error) {
+        console.error('Error fetching matches by category:', error);
+      }
+    };
+    fetchMatchesByCategory();
   }, [categoryRequired]);
 
   // Definición de `profileSections`
@@ -107,16 +113,23 @@ const HomeScreen = () => {
     }
 ];
   // Función para renderizar las secciones de perfiles
-  const renderProfileSection = (section) => (
+  const renderProfileSection = section => (
     <View key={section.title}>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>{section.title}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('AllProfilesScreen', { title: section.title, profiles: section.profiles })}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('AllProfilesScreen', {
+              title: section.title,
+              profiles: section.profiles,
+            })
+          }
+        >
           <Text style={styles.seeMoreText}>Ver más</Text>
         </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.profilesContainer}>
-        {section.profiles.map((profile) => (
+        {section.profiles.map(profile => (
           <TouchableOpacity
             key={profile.id}
             onPress={() => navigation.navigate('MatchScreen', { profile })}
@@ -133,11 +146,15 @@ const HomeScreen = () => {
               )}
             </ImageBackground>
             <View style={styles.profileContent}>
-              <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen', { profile })}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ProfileScreen', { profile })}
+              >
                 <Image source={profile.image} style={styles.profileImage} />
               </TouchableOpacity>
               <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>{profile.name}, {profile.age}</Text>
+                <Text style={styles.profileName}>
+                  {profile.name}, {profile.age}
+                </Text>
                 <Text style={styles.profileCountry}>{profile.country}</Text>
                 <Text style={styles.profileCategory}>{profile.category}</Text>
                 <Text style={styles.profileDistance}>📍 {profile.distance} KM</Text>
@@ -152,15 +169,56 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Encabezado */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.navigate('PickerProfileScreen')}>
+            <View style={styles.userInfo}>
+              <Text style={styles.headerText}>Hola, IBM</Text>
+              <Ionicons name="chevron-forward" size={24} color="black" />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.headerIcons}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('NotificationsScreen')}
+              style={styles.iconButton}
+            >
+              <Ionicons name="notifications-outline" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('SettingsScreen')}
+              style={styles.iconButton}
+            >
+              <Ionicons name="settings-outline" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('HelpScreen')}
+              style={styles.iconButton}
+            >
+              <Text style={styles.helpText}>Ayuda</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Barra de búsqueda */}
+        <TouchableOpacity
+          style={styles.searchBar}
+          onPress={() => navigation.navigate('SearchScreen')}
+        >
+          <Ionicons name="search" size={20} color="gray" />
+          <Text style={styles.searchText}>¿Qué estás buscando?</Text>
+        </TouchableOpacity>
+
         {/* Categorías */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Categorías</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('AllCategoriesScreen', { categories })}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AllCategoriesScreen', { categories })}
+          >
             <Text style={styles.seeMoreText}>Ver más</Text>
           </TouchableOpacity>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
-          {categories.map((category) => (
+          {categories.map(category => (
             <TouchableOpacity
               key={category.id}
               style={styles.categoryItem}
@@ -175,167 +233,187 @@ const HomeScreen = () => {
         {/* Secciones de perfiles */}
         {profileSections.map(renderProfileSection)}
       </ScrollView>
+
+      {/* Barra de navegación inferior */}
+      <View style={styles.tabBar}>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('HomeScreen')}>
+          <Ionicons name="home-outline" size={24} color="black" />
+          <Text style={styles.tabText}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('ChatScreen')}>
+          <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+          <Text style={styles.tabText}>Chats</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('SearchScreen')}>
+          <Ionicons name="search-outline" size={24} color="black" />
+          <Text style={styles.tabText}>Buscar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('PickerProfileScreen')}>
+          <Ionicons name="person-outline" size={24} color="black" />
+          <Text style={styles.tabText}>Perfil</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
   
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#f5f5f5',
-    },
-    scrollContent: {
-      padding: 16,
-    },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 16,
-    },
-    userInfo: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    headerText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginRight: 8,
-    },
-    headerIcons: {
-      flexDirection: 'row',
-    },
-    iconButton: {
-      marginLeft: 16,
-    },
-    helpText: {
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    searchBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: 'white',
-      borderRadius: 8,
-      padding: 12,
-      marginBottom: 16,
-    },
-    searchText: {
-      marginLeft: 8,
-      color: 'gray',
-    },
-    sectionContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 12,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    seeMoreText: {
-      color: '#FCBD02',
-      fontWeight: 'bold',
-    },
-    categoriesContainer: {
-      marginBottom: 24,
-    },
-    categoryItem: {
-      marginRight: 16,
-      alignItems: 'center',
-    },
-    categoryImage: {
-      width: 64,
-      height: 64,
-      borderRadius: 32,
-    },
-    categoryName: {
-      marginTop: 8,
-      textAlign: 'center',
-    },
-    profilesContainer: {
-      marginBottom: 24,
-    },
-    profileCard: {
-      width: 200,
-      marginRight: 16,
-      backgroundColor: 'white',
-      borderRadius: 8,
-      overflow: 'hidden',
-    },
-    profileHeader: {
-      height: 100,
-      justifyContent: 'space-between',
-      padding: 8,
-    },
-    profileRating: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 12,
-      alignSelf: 'flex-start',
-    },
-    ratingText: {
-      color: 'white',
-      fontWeight: 'bold',
-    },
-    newTag: {
-      backgroundColor: '#FCBD02',
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 12,
-      alignSelf: 'flex-start',
-    },
-    newTagText: {
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: 12,
-    },
-    profileContent: {
-      flexDirection: 'row',
-      padding: 12,
-    },
-    profileImage: {
-      width: 50,
-      height: 50,
-      borderRadius: 25,
-      marginRight: 12,
-    },
-    profileInfo: {
-      flex: 1,
-    },
-    profileName: {
-      fontWeight: 'bold',
-      marginBottom: 4,
-    },
-    profileCountry: {
-      color: 'gray',
-      marginBottom: 4,
-    },
-    profileCategory: {
-      color: 'blue',
-      marginBottom: 4,
-    },
-    profileDistance: {
-      color: 'gray',
-    },
-    tabBar: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      backgroundColor: 'white',
-      paddingVertical: 10,
-      borderTopWidth: 1,
-      borderTopColor: '#e0e0e0',
-    },
-    tabItem: {
-      alignItems: 'center',
-    },
-    tabText: {
-      fontSize: 12,
-      marginTop: 4,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  scrollContent: {
+    padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 8,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+  },
+  iconButton: {
+    marginLeft: 16,
+  },
+  helpText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  searchText: {
+    marginLeft: 8,
+    color: 'gray',
+  },
+  sectionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  seeMoreText: {
+    color: '#FCBD02',
+    fontWeight: 'bold',
+  },
+  categoriesContainer: {
+    marginBottom: 24,
+  },
+  categoryItem: {
+    marginRight: 16,
+    alignItems: 'center',
+  },
+  categoryImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+  },
+  categoryName: {
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  profilesContainer: {
+    marginBottom: 24,
+  },
+  profileCard: {
+    width: 200,
+    marginRight: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  profileHeader: {
+    height: 100,
+    justifyContent: 'space-between',
+    padding: 8,
+  },
+  profileRating: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  ratingText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  newTag: {
+    backgroundColor: '#FCBD02',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  newTagText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  profileContent: {
+    flexDirection: 'row',
+    padding: 12,
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12,
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  profileCountry: {
+    color: 'gray',
+    marginBottom: 4,
+  },
+  profileCategory: {
+    color: 'blue',
+    marginBottom: 4,
+  },
+  profileDistance: {
+    color: 'gray',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+  },
+  tabItem: {
+    alignItems: 'center',
+  },
+  tabText: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+});
   
     export default HomeScreen;
